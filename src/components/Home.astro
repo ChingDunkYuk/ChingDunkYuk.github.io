@@ -1,6 +1,8 @@
 ---
 import { getDict, type Locale } from '../i18n/config';
 import { projectLinks } from '../data/projects';
+import { photos } from '../data/photos';
+import { Image } from 'astro:assets';
 
 interface Props {
   locale: Locale;
@@ -84,22 +86,41 @@ const frameSlots = ['ph-a', 'ph-b', 'ph-c', 'ph-d'];
       <h2>{t.sections.photography}</h2>
     </header>
 
-    <!-- Irregular frame sizes: real photos will replace the
-         placeholders, each keeping its own aspect ratio. -->
+    <!-- Irregular frame sizes: each photo keeps its own aspect
+         ratio, only the column span differs per slot. -->
     <div class="photo-grid" role="list" aria-label={t.photography.listLabel}>
       {
-        t.photography.frames.map((label, i) => (
-          <figure class:list={['ph', frameSlots[i]]} role="listitem">
-            <div class="ph-frame" />
-            <figcaption class="mono">
-              {String(i + 1).padStart(2, '0')} &middot; {label}
-            </figcaption>
-          </figure>
-        ))
+        photos.length > 0 ? (
+          photos.map((photo, i) => (
+            <figure class:list={['ph', photo.slot]} role="listitem">
+              <Image
+                class="ph-img"
+                src={photo.src}
+                alt={photo.alt ?? ''}
+                widths={[480, 960, 1440]}
+                sizes="(min-width: 48rem) 50vw, 100vw"
+                loading="lazy"
+                decoding="async"
+              />
+              <figcaption class="mono">
+                {String(i + 1).padStart(2, '0')} &middot; {photo.caption[locale]}
+              </figcaption>
+            </figure>
+          ))
+        ) : (
+          t.photography.frames.map((label, i) => (
+            <figure class:list={['ph', frameSlots[i]]} role="listitem">
+              <div class="ph-frame" />
+              <figcaption class="mono">
+                {String(i + 1).padStart(2, '0')} &middot; {label}
+              </figcaption>
+            </figure>
+          ))
+        )
       }
     </div>
 
-    <p class="section-note">{t.photography.note}</p>
+    {photos.length === 0 && <p class="section-note">{t.photography.note}</p>}
   </div>
 </section>
 
@@ -345,6 +366,13 @@ const frameSlots = ['ph-a', 'ph-b', 'ph-c', 'ph-d'];
     border: 1px dashed var(--line-strong);
     border-radius: var(--radius);
     transition: border-color 160ms var(--ease);
+  }
+
+  /* real photos: full width of the slot, own aspect ratio */
+  .ph-img {
+    width: 100%;
+    height: auto;
+    border-radius: var(--radius);
   }
 
   .ph:hover .ph-frame {
