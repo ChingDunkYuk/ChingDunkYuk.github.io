@@ -1,0 +1,168 @@
+/* ------------------------------------------------------------------
+   Tung Yuk — global tokens & base styles
+
+   All colors, spacing and type sizes are managed here as CSS
+   variables. Components should only reference variables, never
+   hard-coded values. The palette is dark-only ("darkroom"):
+   near-black bg, cream ink, amber accent.
+------------------------------------------------------------------- */
+
+:root {
+  /* -- color · dark ("darkroom") ----------------------------------- */
+  --bg: #131311;
+  --surface: #1e1d1a;
+  --surface-dim: #201f1b;
+  --ink: #e8e5da;
+  --ink-soft: #a8a496;
+  --ink-faint: #78746a;
+  --line: #2c2b26;
+  --line-strong: #453f33;
+  --accent: #d2884a; /* amber — camera leather, phosphor CRT */
+  --accent-soft: rgba(210, 136, 74, 0.14);
+  --ok: #7fb98c; /* uptime green */
+
+  /* -- type -------------------------------------------------------- */
+  --font-sans: system-ui, -apple-system, 'Segoe UI', Roboto,
+    'Helvetica Neue', Arial, 'PingFang HK', 'PingFang TC',
+    'Microsoft JhengHei', sans-serif;
+  --font-mono: ui-monospace, 'Cascadia Code', 'JetBrains Mono', Menlo,
+    Consolas, 'Liberation Mono', 'PingFang HK', 'Microsoft JhengHei',
+    monospace;
+  --font-serif: Georgia, 'Iowan Old Style', 'Times New Roman', 'Songti TC',
+    'PMingLiU', serif;
+
+  --text-xs: 0.75rem; /* 12 */
+  --text-sm: 0.875rem; /* 14 */
+  --text-base: 1rem; /* 16 */
+  --text-md: 1.125rem; /* 18 */
+  --text-lg: 1.375rem; /* 22 */
+  --text-xl: 1.75rem; /* 28 */
+  --text-hero: clamp(3rem, 2rem + 6vw, 5.5rem);
+
+  /* -- spacing (4px scale) ----------------------------------------- */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+  --space-7: 3rem;
+  --space-8: 4rem;
+  --space-9: 6rem;
+
+  /* -- layout ------------------------------------------------------ */
+  --container: 64rem;
+  --header-h: 3.75rem;
+  --radius: 3px;
+  --border: 1px solid var(--line);
+  --ease: cubic-bezier(0.2, 0.6, 0.2, 1);
+}
+
+/* -- reset --------------------------------------------------------- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+* {
+  margin: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  font-size: var(--text-base);
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+}
+
+img,
+svg,
+video {
+  display: block;
+  max-width: 100%;
+}
+
+a {
+  color: inherit;
+}
+
+::selection {
+  background: var(--accent-soft);
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: var(--radius);
+}
+
+/* -- shared utilities ---------------------------------------------- */
+.container {
+  max-width: var(--container);
+  margin-inline: auto;
+  padding-inline: var(--space-5);
+}
+
+.mono {
+  font-family: var(--font-mono);
+}
+
+/* -- shared section pattern (reused by every page) ------------------ */
+.section {
+  border-top: var(--border);
+  padding-block: var(--space-8);
+  scroll-margin-top: var(--space-6);
+}
+
+.section-head {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  margin-bottom: var(--space-6);
+}
+
+.section-head .index {
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  color: var(--accent);
+}
+
+.section-head h2 {
+  font-size: var(--text-lg);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.section-head::after {
+  content: '';
+  flex: 1;
+  border-top: var(--border);
+}
+
+.section-note {
+  margin-top: var(--space-4);
+  color: var(--ink-faint);
+  font-size: var(--text-sm);
+}
+
+/* -- motion --------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

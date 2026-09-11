@@ -1,0 +1,224 @@
+---
+import '../styles/global.css';
+import { getDict, htmlLang, localeBase, type Locale } from '../i18n/config';
+
+interface Props {
+  locale: Locale;
+  title?: string;
+  description?: string;
+}
+
+const { locale, title, description } = Astro.props;
+const t = getDict(locale);
+const year = new Date().getFullYear();
+---
+
+<!doctype html>
+<html lang={htmlLang[locale]}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" href="/favicon.ico" sizes="any" />
+    <meta name="generator" content={Astro.generator} />
+    <meta name="description" content={description ?? t.meta.description} />
+    <meta property="og:title" content={title ?? t.meta.title} />
+    <meta property="og:description" content={description ?? t.meta.description} />
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content={locale === 'en' ? 'en' : 'zh_HK'} />
+    <title>{title ?? t.meta.title}</title>
+  </head>
+
+  <body>
+    <header class="site-header">
+      <div class="container header-inner">
+        <a class="wordmark mono" href={localeBase[locale]}>
+          <img
+            class="logo"
+            src="/logo-mark.png"
+            alt=""
+            width="725"
+            height="834"
+            decoding="async"
+          />
+          ~/tungyuk
+        </a>
+
+        <div class="header-right">
+          <nav class="site-nav mono" aria-label={t.header.navLabel}>
+            <a href="#projects">{t.header.projects}</a>
+            <a href="#photography">{t.header.photography}</a>
+            <a href="#writing">{t.header.writing}</a>
+            <a href="#about">{t.header.about}</a>
+          </nav>
+
+          <nav class="lang-switch mono" aria-label={t.header.langLabel}>
+            <a href="/" data-lang-switch aria-current={locale === 'en' ? 'true' : undefined}>
+              {t.header.langEn}
+            </a>
+            <span class="sep" aria-hidden="true">/</span>
+            <a href="/zh-hk/" data-lang-switch aria-current={locale === 'zh-hk' ? 'true' : undefined}>
+              {t.header.langZh}
+            </a>
+          </nav>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <slot />
+    </main>
+
+    <footer class="site-footer">
+      <div class="container footer-inner mono">
+        <span>&copy; {year} Tung Yuk</span>
+        <span class="footer-links">
+          <a href="https://github.com/ChingDunkYuk" rel="me noopener" target="_blank">github</a>
+          <span class="dim" aria-hidden="true">&middot;</span>
+          <span class="dim">{t.footer.builtWith}</span>
+        </span>
+      </div>
+    </footer>
+
+    <script>
+      // Language switch: keep the reader on the same section by
+      // appending the current hash to the switch links. Sections use
+      // identical ids on both locales, so the anchor carries over.
+      const links = document.querySelectorAll<HTMLAnchorElement>('a[data-lang-switch]');
+
+      const sync = () => {
+        const { hash } = location;
+        links.forEach((link) => {
+          const base = link.dataset.base ?? link.getAttribute('href')?.split('#')[0] ?? '/';
+          link.dataset.base = base;
+          link.setAttribute('href', hash ? `${base}${hash}` : base);
+        });
+      };
+
+      sync();
+      window.addEventListener('hashchange', sync);
+    </script>
+  </body>
+</html>
+
+<style>
+  .site-header {
+    border-bottom: var(--border);
+  }
+
+  .header-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-3) var(--space-5);
+    flex-wrap: wrap;
+    min-height: var(--header-h);
+    padding-block: var(--space-2);
+  }
+
+  .wordmark {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-3);
+    font-size: var(--text-sm);
+    font-weight: 600;
+    text-decoration: none;
+  }
+
+  /* the logo mark is cream-on-transparent, tuned for the dark bg */
+  .logo {
+    display: block;
+    height: 32px;
+    width: auto;
+  }
+
+  .wordmark:hover {
+    color: var(--accent);
+  }
+
+  .header-right {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--space-2) var(--space-5);
+  }
+
+  .site-nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2) var(--space-4);
+    font-size: var(--text-sm);
+  }
+
+  .site-nav a {
+    color: var(--ink-soft);
+    text-decoration: none;
+    /* invisible tap-area padding for small screens */
+    padding-block: 6px;
+  }
+
+  .site-nav a:hover {
+    color: var(--accent);
+  }
+
+  .lang-switch {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-size: var(--text-sm);
+    border-left: var(--border);
+    padding-left: var(--space-4);
+  }
+
+  .lang-switch a {
+    color: var(--ink-faint);
+    text-decoration: none;
+    padding-block: 6px;
+  }
+
+  .lang-switch a:hover {
+    color: var(--accent);
+  }
+
+  .lang-switch a[aria-current='true'] {
+    color: var(--ink);
+  }
+
+  .lang-switch .sep {
+    color: var(--ink-faint);
+  }
+
+  .site-footer {
+    border-top: var(--border);
+    padding-block: var(--space-5);
+  }
+
+  .footer-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-3);
+    flex-wrap: wrap;
+    font-size: var(--text-xs);
+    color: var(--ink-faint);
+  }
+
+  .footer-links {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+  }
+
+  .footer-links a {
+    color: var(--ink-faint);
+    text-decoration: none;
+  }
+
+  .footer-links a:hover {
+    color: var(--accent);
+  }
+
+  .dim {
+    color: var(--ink-faint);
+  }
+</style>
