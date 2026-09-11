@@ -48,12 +48,12 @@ export const zhHK: UIStrings = {
       name: 'What2Eat',
       description:
         '每日最難解嘅問題，外判俾程式——一個專門回答「今日食乜好」嘅小型決策引擎。',
-      meta: '運行中 · web app · 決策引擎',
+      meta: '運行中 · android app · 決策引擎',
     },
     {
       name: 'Random City',
       description: '諗唔到下一站去邊？擲骰話事——行程自理。',
-      meta: 'beta · web app · 旅行',
+      meta: 'beta · android app · 旅行',
     },
     {
       name: 'TrainSense',

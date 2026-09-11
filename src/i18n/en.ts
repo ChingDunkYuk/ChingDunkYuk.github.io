@@ -43,13 +43,13 @@ export const en = {
       name: 'What2Eat',
       description:
         "The hardest question of the day, outsourced. A small decision engine for “what's for lunch?”",
-      meta: 'running · web app · decision engine',
+      meta: 'running · android app · decision engine',
     },
     {
       name: 'Random City',
       description:
         "Can't decide where to go next? Let the dice pick a city — itinerary not included.",
-      meta: 'beta · web app · travel',
+      meta: 'beta · android app · travel',
     },
     {
       name: 'TrainSense',

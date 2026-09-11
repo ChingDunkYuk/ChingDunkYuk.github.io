@@ -1,5 +1,6 @@
 ---
 import { getDict, type Locale } from '../i18n/config';
+import { projectLinks } from '../data/projects';
 
 interface Props {
   locale: Locale;
@@ -45,15 +46,31 @@ const frameSlots = ['ph-a', 'ph-b', 'ph-c', 'ph-d'];
 
     <ul class="project-grid" role="list">
       {
-        t.projects.map((project) => (
-          <li class="project">
-            <h3>
-              <a href="#">{project.name}</a>
-            </h3>
-            <p class="desc">{project.description}</p>
-            <p class="meta mono">{project.meta}</p>
-          </li>
-        ))
+        t.projects.map((project) => {
+          const href = projectLinks[project.name] ?? '#';
+          // '#' means "not published yet" — no external affordances.
+          const external = href !== '#';
+          return (
+            <li class="project">
+              <h3>
+                <a
+                  href={href}
+                  target={external ? '_blank' : undefined}
+                  rel={external ? 'noopener' : undefined}
+                >
+                  {project.name}
+                  {external && (
+                    <span class="ext mono" aria-hidden="true">
+                      &nearr;
+                    </span>
+                  )}
+                </a>
+              </h3>
+              <p class="desc">{project.description}</p>
+              <p class="meta mono">{project.meta}</p>
+            </li>
+          );
+        })
       }
     </ul>
   </div>
@@ -262,6 +279,15 @@ const frameSlots = ['ph-a', 'ph-b', 'ph-c', 'ph-d'];
     color: var(--accent);
     text-decoration: underline;
     text-underline-offset: 6px;
+  }
+
+  /* small off-site indicator next to linked project names */
+  .project h3 .ext {
+    font-size: var(--text-md);
+    font-weight: 400;
+    color: var(--ink-faint);
+    margin-left: var(--space-1);
+    vertical-align: 0.4em;
   }
 
   .desc {
