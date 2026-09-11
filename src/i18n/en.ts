@@ -60,7 +60,7 @@ export const en = {
   ],
 
   photography: {
-    listLabel: 'Photo frames (pending)',
+    listLabel: 'Photos',
     frames: ['unexposed', 'developing', 'light leak', 'not yet shot'],
     note: 'Darkroom in progress — film scans and contact sheets will land here.',
   },

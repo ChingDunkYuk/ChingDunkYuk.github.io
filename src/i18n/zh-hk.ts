@@ -64,7 +64,7 @@ export const zhHK: UIStrings = {
   ],
 
   photography: {
-    listLabel: '照片（待補）',
+    listLabel: '照片',
     frames: ['未曝光', '沖晒中', '漏光', '未影'],
     note: '暗房趕工中——菲林掃描同 contact sheet 稍後登場。',
   },
