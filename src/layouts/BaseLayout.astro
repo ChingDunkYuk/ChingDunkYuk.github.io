@@ -38,6 +38,11 @@ const year = new Date().getFullYear();
       {Array.from({ length: 60 }, (_, i) => <span>{String(i + 1).padStart(2, '0')}</span>)}
     </div>
     <div class="edge-rail" aria-hidden="true"></div>
+    {/* film edge marking — the makers' credit running along the
+        strip, like the amber text on a developed 35mm negative */}
+    <div class="edge-mark mono" aria-hidden="true">
+      {Array.from({ length: 10 }, () => 'by klaus & Sora \u25B8 ').join('')}
+    </div>
 
     <header class="site-header">
       <div class="container header-inner">
@@ -160,9 +165,32 @@ const year = new Date().getFullYear();
     filter: brightness(1.9);
   }
 
+  /* maker's mark beside the perforations — desktop only, phones have
+     no room between the mini rail and the content column */
+  .edge-mark {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    right: 2.3rem;
+    display: none;
+    overflow: hidden;
+    writing-mode: vertical-rl;
+    font-size: 0.5625rem;
+    letter-spacing: 0.32em;
+    line-height: 1.75rem;
+    color: var(--accent);
+    opacity: 0.32;
+    pointer-events: none;
+    user-select: none;
+  }
+
   @media (min-width: 68.75rem) {
     .edge-gutter {
       display: flex;
+    }
+
+    .edge-mark {
+      display: block;
     }
 
     .edge-rail {
