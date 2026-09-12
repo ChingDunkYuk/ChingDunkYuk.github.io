@@ -10,7 +10,6 @@
 :root {
   /* -- color · dark ("darkroom") ----------------------------------- */
   --bg: #131311;
-  --surface: #1e1d1a;
   --surface-dim: #201f1b;
   --ink: #e8e5da;
   --ink-soft: #a8a496;
@@ -19,7 +18,6 @@
   --line-strong: #453f33;
   --accent: #d2884a; /* amber — camera leather, phosphor CRT */
   --accent-soft: rgba(210, 136, 74, 0.14);
-  --ok: #7fb98c; /* uptime green */
 
   /* -- type -------------------------------------------------------- */
   --font-sans: system-ui, -apple-system, 'Segoe UI', Roboto,
@@ -48,7 +46,6 @@
   --space-6: 2rem;
   --space-7: 3rem;
   --space-8: 4rem;
-  --space-9: 6rem;
 
   /* -- layout ------------------------------------------------------ */
   --container: 64rem;

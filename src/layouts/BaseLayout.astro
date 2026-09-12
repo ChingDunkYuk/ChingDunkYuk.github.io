@@ -1,6 +1,8 @@
 ---
 import '../styles/global.css';
+import { getImage } from 'astro:assets';
 import { getDict, htmlLang, localeBase, type Locale } from '../i18n/config';
+import ogSrc from '../assets/photos/workshop-light.jpg';
 
 interface Props {
   locale: Locale;
@@ -11,6 +13,29 @@ interface Props {
 const { locale, title, description } = Astro.props;
 const t = getDict(locale);
 const year = new Date().getFullYear();
+
+// Absolute URLs for canonical / hreflang / OG. `site` is set in
+// astro.config.mjs; the fallback only keeps the type checker happy.
+const site = Astro.site ?? new URL('https://chingdunkyuk.github.io');
+const canonicalURL = new URL(localeBase[locale], site).href;
+
+// Full reciprocal set on every page — self + the other locale
+// (x-default added in <head>) so Google's cross-linking rule holds.
+const alternates = (Object.keys(localeBase) as Locale[]).map((l) => ({
+  hreflang: htmlLang[l],
+  href: new URL(localeBase[l], site).href,
+}));
+
+// Social card image — a build-time 1200×630 crop; it never enters
+// the page DOM, the visible photos are untouched.
+const ogImage = await getImage({
+  src: ogSrc,
+  width: 1200,
+  height: 630,
+  fit: 'cover',
+  format: 'jpeg',
+});
+const ogImageURL = new URL(ogImage.src, site).href;
 ---
 
 <!doctype html>
@@ -27,6 +52,27 @@ const year = new Date().getFullYear();
     <meta property="og:description" content={description ?? t.meta.description} />
     <meta property="og:type" content="website" />
     <meta property="og:locale" content={locale === 'en' ? 'en' : 'zh_HK'} />
+    <link rel="canonical" href={canonicalURL} />
+    {alternates.map((a) => (
+      <link rel="alternate" hreflang={a.hreflang} href={a.href} />
+    ))}
+    <link rel="alternate" hreflang="x-default" href={new URL(localeBase.en, site).href} />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+    <meta property="og:url" content={canonicalURL} />
+    <meta property="og:site_name" content="Tung Yuk" />
+    <meta property="og:image" content={ogImageURL} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:type" content="image/jpeg" />
+    <meta
+      property="og:image:alt"
+      content="Workshop light — a workbench and stool cut by shafts of window light"
+    />
+    <meta property="og:locale:alternate" content={locale === 'en' ? 'zh_HK' : 'en'} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title ?? t.meta.title} />
+    <meta name="twitter:description" content={description ?? t.meta.description} />
+    <meta name="twitter:image" content={ogImageURL} />
     <title>{title ?? t.meta.title}</title>
   </head>
 
@@ -78,11 +124,11 @@ const year = new Date().getFullYear();
           </nav>
 
           <nav class="lang-switch mono" aria-label={t.header.langLabel}>
-            <a href="/" data-lang-switch aria-current={locale === 'en' ? 'true' : undefined}>
+            <a href={localeBase.en} data-lang-switch aria-current={locale === 'en' ? 'true' : undefined}>
               {t.header.langEn}
             </a>
             <span class="sep" aria-hidden="true">/</span>
-            <a href="/zh-hk/" data-lang-switch aria-current={locale === 'zh-hk' ? 'true' : undefined}>
+            <a href={localeBase['zh-hk']} data-lang-switch aria-current={locale === 'zh-hk' ? 'true' : undefined}>
               {t.header.langZh}
             </a>
           </nav>
@@ -98,7 +144,7 @@ const year = new Date().getFullYear();
       <div class="container footer-inner mono">
         <span>&copy; {year} Tung Yuk</span>
         <span class="footer-links">
-          <a href="https://github.com/ChingDunkYuk" rel="me noopener" target="_blank">github</a>
+          <a href="https://github.com/ChingDunkYuk" rel="me noopener noreferrer" target="_blank">github</a>
           <span class="dim" aria-hidden="true">&middot;</span>
           <span class="dim">{t.footer.builtWith}</span>
         </span>

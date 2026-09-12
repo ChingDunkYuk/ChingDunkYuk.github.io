@@ -87,7 +87,7 @@ const frameSlots = ['ph-a', 'ph-b', 'ph-c', 'ph-d'];
                 <a
                   href={href}
                   target={external ? '_blank' : undefined}
-                  rel={external ? 'noopener' : undefined}
+                  rel={external ? 'noopener noreferrer' : undefined}
                 >
                   {project.name}
                   {external && (
@@ -125,7 +125,7 @@ const frameSlots = ['ph-a', 'ph-b', 'ph-c', 'ph-d'];
               <Image
                 class="ph-img"
                 src={photo.src}
-                alt={photo.alt ?? ''}
+                alt={photo.alt?.[locale] ?? ''}
                 widths={[480, 960, 1440]}
                 sizes="(min-width: 48rem) 50vw, 100vw"
                 loading="lazy"
@@ -193,7 +193,7 @@ const frameSlots = ['ph-a', 'ph-b', 'ph-c', 'ph-d'];
       <ul class="contact mono" role="list">
         <li>
           <span class="k">{t.about.githubLabel}</span>
-          <a href="https://github.com/ChingDunkYuk" rel="me noopener" target="_blank">
+          <a href="https://github.com/ChingDunkYuk" rel="me noopener noreferrer" target="_blank">
             github.com/ChingDunkYuk <span aria-hidden="true">&nearr;</span>
           </a>
         </li>

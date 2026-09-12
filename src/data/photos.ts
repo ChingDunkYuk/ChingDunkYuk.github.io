@@ -12,8 +12,8 @@ export interface Photo {
    *   ph-a: 2/6 narrow · ph-b: 4/6 wide · ph-c / ph-d: 3/6 medium
    */
   slot: PhotoSlot;
-  /** screen-reader description of the shot */
-  alt?: string;
+  /** screen-reader description of the shot, per locale */
+  alt?: Record<Locale, string>;
   /** caption under the frame, per locale */
   caption: Record<Locale, string>;
 }
@@ -49,19 +49,28 @@ export const photos: Photo[] = [
   {
     src: alleyRoots,
     slot: 'ph-b',
-    alt: 'Old alley with exposed tree roots and a hand-written shop sign',
+    alt: {
+      en: 'Old alley with exposed tree roots and a hand-written shop sign',
+      'zh-hk': '舊城小巷，樹根露出地面，旁邊一塊手寫招牌',
+    },
     caption: { en: 'old town alley', 'zh-hk': '舊城老巷' },
   },
   {
     src: pavementRoots,
     slot: 'ph-a',
-    alt: 'Tree roots spreading across stone pavement in hard afternoon light',
+    alt: {
+      en: 'Tree roots spreading across stone pavement in hard afternoon light',
+      'zh-hk': '午後硬光下，樹根橫過石板路蔓延',
+    },
     caption: { en: 'roots on stone', 'zh-hk': '石板上的根' },
   },
   {
     src: workshopLight,
     slot: 'ph-c',
-    alt: 'Workbench and wooden stool cut by shafts of window light',
+    alt: {
+      en: 'Workbench and wooden stool cut by shafts of window light',
+      'zh-hk': '工作台同木凳，俾一道道窗光切開',
+    },
     caption: { en: 'workshop light', 'zh-hk': '工房窗光' },
   },
 ];
