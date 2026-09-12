@@ -51,7 +51,7 @@ const year = new Date().getFullYear();
               decoding="async"
             />
           </span>
-          ~/tungyuk
+          ~/tungyuk<span class="word-cursor" aria-hidden="true"></span>
         </a>
 
         <div class="header-right">
@@ -199,6 +199,30 @@ const year = new Date().getFullYear();
 
   .wordmark:hover {
     color: var(--accent);
+  }
+
+  /* terminal block cursor — echoes the hero blink, joins the amber
+     crossfade on hover */
+  .word-cursor {
+    display: inline-block;
+    width: 0.55em;
+    height: 1.05em;
+    margin-left: 0.15em;
+    vertical-align: text-bottom;
+    background: var(--ink-faint);
+    animation: wordmark-blink 1.2s steps(1) infinite;
+    transition: background 0.4s var(--ease);
+  }
+
+  @keyframes wordmark-blink {
+    50% {
+      opacity: 0;
+    }
+  }
+
+  .wordmark:hover .word-cursor,
+  .wordmark:focus-visible .word-cursor {
+    background: var(--accent);
   }
 
   .header-right {
