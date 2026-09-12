@@ -12,6 +12,7 @@ export const en = {
 
   header: {
     navLabel: 'Primary',
+    now: 'Now',
     projects: 'Projects',
     photography: 'Photography',
     writing: 'Writing',
@@ -31,10 +32,25 @@ export const en = {
   },
 
   sections: {
+    now: 'Now',
     projects: 'Selected Projects',
     photography: 'Photography',
     writing: 'Writing',
     about: 'About',
+  },
+
+  // What's on the bench right now — short-lived entries, swapped out
+  // whenever the focus shifts. `updated` is the darkroom pun for the
+  // stamp at the bottom of the readout.
+  now: {
+    prompt: '$ cat now.md',
+    items: [
+      { k: 'what2eat', v: 'planning the monthly report feature.' },
+      { k: 'random city', v: 'adding the next round of features.' },
+      { k: 'ricoh gxr', v: 'hunting the used market for one — the modular old camera.' },
+      { k: 'this site', v: 'endless tinkering — film edges, watermarks, and the next small idea.' },
+    ],
+    updated: 'last developed · 2026-09',
   },
 
   // Project names stay in English across locales; only the copy translates.

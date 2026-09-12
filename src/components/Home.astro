@@ -32,17 +32,46 @@ const frameSlots = ['ph-a', 'ph-b', 'ph-c', 'ph-d'];
       {t.hero.note}<span class="cursor" aria-hidden="true"></span>
     </p>
 
-    <a class="scroll-hint mono" href="#projects">
+    <a class="scroll-hint mono" href="#now">
       <span aria-hidden="true">&darr;</span> {t.hero.scroll}
     </a>
   </div>
 </section>
 
-<!-- ============ 01 · selected projects ============ -->
-<section class="section" id="projects">
+<!-- ============ 01 · now (what's on the bench) ============ -->
+<section class="section" id="now">
   <div class="container">
     <header class="section-head">
       <span class="index" aria-hidden="true">01</span>
+      <h2>{t.sections.now}</h2>
+    </header>
+
+    <!-- set like a terminal readout: prompt, entries, timestamp -->
+    <div class="now">
+      <p class="now-prompt mono" aria-hidden="true">{t.now.prompt}</p>
+      <ul class="now-list mono" role="list">
+        {
+          t.now.items.map((item) => (
+            <li role="listitem">
+              <span class="now-k">
+                <span class="now-mark" aria-hidden="true">&blacktriangleright;</span>
+                {item.k}
+              </span>
+              <span class="now-v">{item.v}</span>
+            </li>
+          ))
+        }
+      </ul>
+      <p class="now-updated mono">{t.now.updated}</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 02 · selected projects ============ -->
+<section class="section" id="projects">
+  <div class="container">
+    <header class="section-head">
+      <span class="index" aria-hidden="true">02</span>
       <h2>{t.sections.projects}</h2>
     </header>
 
@@ -78,11 +107,11 @@ const frameSlots = ['ph-a', 'ph-b', 'ph-c', 'ph-d'];
   </div>
 </section>
 
-<!-- ============ 02 · photography ============ -->
+<!-- ============ 03 · photography ============ -->
 <section class="section" id="photography">
   <div class="container">
     <header class="section-head">
-      <span class="index" aria-hidden="true">02</span>
+      <span class="index" aria-hidden="true">03</span>
       <h2>{t.sections.photography}</h2>
     </header>
 
@@ -124,11 +153,11 @@ const frameSlots = ['ph-a', 'ph-b', 'ph-c', 'ph-d'];
   </div>
 </section>
 
-<!-- ============ 03 · writing ============ -->
+<!-- ============ 04 · writing ============ -->
 <section class="section" id="writing">
   <div class="container">
     <header class="section-head">
-      <span class="index" aria-hidden="true">03</span>
+      <span class="index" aria-hidden="true">04</span>
       <h2>{t.sections.writing}</h2>
     </header>
 
@@ -148,11 +177,11 @@ const frameSlots = ['ph-a', 'ph-b', 'ph-c', 'ph-d'];
   </div>
 </section>
 
-<!-- ============ 04 · about ============ -->
+<!-- ============ 05 · about ============ -->
 <section class="section" id="about">
   <div class="container">
     <header class="section-head">
-      <span class="index" aria-hidden="true">04</span>
+      <span class="index" aria-hidden="true">05</span>
       <h2>{t.sections.about}</h2>
     </header>
 
@@ -252,6 +281,66 @@ const frameSlots = ['ph-a', 'ph-b', 'ph-c', 'ph-d'];
 
   .scroll-hint:hover {
     color: var(--accent);
+  }
+
+  /* ---------- now (live status, set like a terminal readout) ---------- */
+  .now {
+    max-width: 44rem;
+  }
+
+  .now-prompt {
+    color: var(--accent);
+    font-size: var(--text-sm);
+    margin-bottom: var(--space-4);
+  }
+
+  .now-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    font-size: var(--text-sm);
+  }
+
+  .now-list li {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.15rem;
+    padding-block: var(--space-3);
+  }
+
+  .now-list li + li {
+    border-top: var(--border);
+    padding-block: var(--space-4);
+  }
+
+  @media (min-width: 40rem) {
+    .now-list li {
+      grid-template-columns: 11rem 1fr;
+      gap: var(--space-4);
+      align-items: baseline;
+    }
+  }
+
+  .now-k {
+    color: var(--ink);
+    letter-spacing: 0.01em;
+  }
+
+  .now-mark {
+    color: var(--accent);
+    margin-right: 0.5em;
+  }
+
+  .now-v {
+    color: var(--ink-soft);
+    line-height: 1.65;
+  }
+
+  .now-updated {
+    margin-top: var(--space-4);
+    color: var(--ink-faint);
+    font-size: var(--text-xs);
+    letter-spacing: 0.06em;
   }
 
   /* ---------- projects (editorial list, not cards) ---------- */

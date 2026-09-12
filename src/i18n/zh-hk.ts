@@ -17,6 +17,7 @@ export const zhHK: UIStrings = {
 
   header: {
     navLabel: '主目錄',
+    now: '近況',
     projects: '項目',
     photography: '攝影',
     writing: '文章',
@@ -36,10 +37,23 @@ export const zhHK: UIStrings = {
   },
 
   sections: {
+    now: '而家搞緊',
     projects: '精選項目',
     photography: '攝影',
     writing: '文章',
     about: '關於',
+  },
+
+  // 而家搞緊乜——短期紀錄，焦點一轉就換。`updated` 用沖曬做梗。
+  now: {
+    prompt: '$ cat now.md',
+    items: [
+      { k: 'what2eat', v: '計劃緊開發月度報告。' },
+      { k: 'random city', v: '追加緊新功能。' },
+      { k: 'ricoh gxr', v: '計劃搜刮一台——模組化老相機，二手市場巡緊。' },
+      { k: '呢個網站', v: '有得搞就搞——菲林邊、水印，仲有下一個小念頭。' },
+    ],
+    updated: '最近沖曬 · 2026-09',
   },
 
   // 專案名稱保留英文原名，只翻譯描述同界面文字。
