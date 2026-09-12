@@ -31,6 +31,14 @@ const year = new Date().getFullYear();
   </head>
 
   <body>
+    {/* ambient edges — line-number gutter (left) + film sprocket rail
+        (right), framing the page like an editor pane on a strip of
+        film. Wide viewports only; small screens stay clean. */}
+    <div class="edge-gutter mono" aria-hidden="true">
+      {Array.from({ length: 60 }, (_, i) => <span>{String(i + 1).padStart(2, '0')}</span>)}
+    </div>
+    <div class="edge-rail" aria-hidden="true"></div>
+
     <header class="site-header">
       <div class="container header-inner">
         <a class="wordmark mono" href={localeBase[locale]}>
@@ -113,6 +121,50 @@ const year = new Date().getFullYear();
 </html>
 
 <style>
+  /* -- ambient edges --------------------------------------------------
+     line-number gutter (left) + film sprocket rail (right). Both are
+     fixed page furniture outside the content container, hidden below
+     1100px so phones and tablets stay clean. */
+  .edge-gutter,
+  .edge-rail {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    display: none;
+    pointer-events: none;
+    user-select: none;
+  }
+
+  .edge-gutter {
+    left: 0.875rem;
+    width: 1.75rem;
+    flex-direction: column;
+    overflow: hidden;
+    text-align: right;
+    font-size: 0.625rem;
+    line-height: 2rem;
+    color: var(--ink-faint);
+    opacity: 0.4;
+  }
+
+  .edge-rail {
+    right: 0.875rem;
+    width: 1.125rem;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='34'%3E%3Crect x='3' y='8' width='12' height='18' rx='2.5' fill='%232c2b26'/%3E%3C/svg%3E");
+    background-repeat: repeat-y;
+    background-position: top center;
+  }
+
+  @media (min-width: 68.75rem) {
+    .edge-gutter {
+      display: flex;
+    }
+
+    .edge-rail {
+      display: block;
+    }
+  }
+
   .site-header {
     border-bottom: var(--border);
   }
