@@ -104,6 +104,7 @@ export const en = {
 
   footer: {
     builtWith: 'built with astro',
+    backToTop: 'rewind to top',
   },
 };
 

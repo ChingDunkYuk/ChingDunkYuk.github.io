@@ -106,5 +106,6 @@ export const zhHK: UIStrings = {
 
   footer: {
     builtWith: '用 astro 砌',
+    backToTop: '倒片返頁頂',
   },
 };
