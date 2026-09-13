@@ -3,6 +3,7 @@ import '../styles/global.css';
 import { getImage } from 'astro:assets';
 import { getDict, htmlLang, localeBase, type Locale } from '../i18n/config';
 import { site } from '../config/site';
+import { ambientCommands } from '../data/ambient';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import ogSrc from '../assets/photos/workshop-light.jpg';
@@ -41,10 +42,25 @@ const ogImageURL = new URL(ogImage.src, siteUrl).href;
 ---
 
 <!doctype html>
-<html lang={htmlLang[locale]}>
+<html lang={htmlLang[locale]} data-theme="dark">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    {/* theme restore — must run before first paint, hence is:inline
+        (Astro would otherwise bundle a bare <script> as a deferred
+        module and the page would flash). Anything but a stored
+        'light' falls back to dark; storage can throw in private
+        mode, so it's wrapped in try/catch. */}
+    <script is:inline>
+      (() => {
+        try {
+          const stored = localStorage.getItem('tungyuk:theme');
+          if (stored === 'light') document.documentElement.dataset.theme = 'light';
+        } catch {
+          /* private mode / storage disabled — stay dark */
+        }
+      })();
+    </script>
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="icon" href="/favicon.ico" sizes="any" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
@@ -79,6 +95,17 @@ const ogImageURL = new URL(ogImage.src, siteUrl).href;
   </head>
 
   <body>
+    {/* paper ambience — on the light theme, ghost terminal
+        one-liners drift slowly up the page, faint as a watermark:
+        a session left running behind the paper stock. Fully
+        server-rendered (lanes and timing keyed by index in the
+        CSS below — nothing random, nothing interactive); the dark
+        theme keeps it display:none, so the film grain owns that
+        ambience alone. */}
+    <div class="ambient-commands mono" aria-hidden="true">
+      {ambientCommands.map((cmd) => <span class="am-cmd">{cmd}</span>)}
+    </div>
+
     {/* ambient edges — line-number gutter (left) + film sprocket rail
         (right), framing the page like an editor pane on a strip of
         film. Wide viewports only; small screens stay clean. */}
@@ -160,11 +187,112 @@ const ogImageURL = new URL(ogImage.src, siteUrl).href;
         });
         update();
       }
+
+      // Theme switch: flip html[data-theme] and remember the choice.
+      // Labels arrive from the i18n dicts via data attributes, so no
+      // copy lives here. The inline head script already restored the
+      // stored theme before first paint.
+      const themeBtn = document.querySelector<HTMLButtonElement>('[data-theme-toggle]');
+      if (themeBtn) {
+        const syncThemeLabel = () => {
+          const light = document.documentElement.dataset.theme === 'light';
+          themeBtn.setAttribute(
+            'aria-label',
+            light ? (themeBtn.dataset.labelDark ?? '') : (themeBtn.dataset.labelLight ?? '')
+          );
+        };
+        syncThemeLabel();
+        themeBtn.addEventListener('click', () => {
+          const next = document.documentElement.dataset.theme === 'light' ? 'dark' : 'light';
+          document.documentElement.dataset.theme = next;
+          try {
+            localStorage.setItem('tungyuk:theme', next);
+          } catch {
+            /* private mode — apply for this visit only */
+          }
+          syncThemeLabel();
+        });
+      }
     </script>
   </body>
 </html>
 
 <style>
+  /* -- paper ambience: floating commands --------------------------------
+     Light theme only. A dozen ghost one-liners rise slowly through
+     the page like a terminal session left running behind the paper
+     stock. Everything is server-rendered and deterministic — lane
+     (--x), duration (--t), phase (--d) and the reduced-motion
+     resting spot (--y) are keyed to the child index, so the layer
+     looks identical on every visit. Sits at z-index:-1 (behind all
+     content, above the canvas), never takes pointer events, and
+     freezes into a still scatter under prefers-reduced-motion. */
+  .ambient-commands {
+    display: none;
+  }
+
+  html[data-theme='light'] .ambient-commands {
+    display: block;
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    overflow: hidden;
+    pointer-events: none;
+    user-select: none;
+    font-size: 0.6875rem;
+    letter-spacing: 0.08em;
+    color: var(--ambient-ink);
+  }
+
+  html[data-theme='light'] .am-cmd {
+    position: absolute;
+    top: 100%;
+    left: var(--x);
+    white-space: nowrap;
+    animation: am-drift var(--t) linear infinite;
+    animation-delay: var(--d);
+  }
+
+  @keyframes am-drift {
+    to {
+      transform: translateY(calc(-100vh - 6rem));
+    }
+  }
+
+  /* lanes — interleaved so neighbours never share a column, phases
+     offset so nothing marches in step */
+  html[data-theme='light'] .am-cmd:nth-child(1)  { --x: 6%;  --t: 64s; --d: -12s; --y: 18%; }
+  html[data-theme='light'] .am-cmd:nth-child(2)  { --x: 78%; --t: 78s; --d: -40s; --y: 55%; }
+  html[data-theme='light'] .am-cmd:nth-child(3)  { --x: 15%; --t: 58s; --d: -25s; --y: 70%; }
+  html[data-theme='light'] .am-cmd:nth-child(4)  { --x: 70%; --t: 84s; --d: -60s; --y: 32%; }
+  html[data-theme='light'] .am-cmd:nth-child(5)  { --x: 10%; --t: 62s; --d: -8s;  --y: 85%; }
+  html[data-theme='light'] .am-cmd:nth-child(6)  { --x: 84%; --t: 90s; --d: -35s; --y: 12%; }
+  html[data-theme='light'] .am-cmd:nth-child(7)  { --x: 22%; --t: 70s; --d: -50s; --y: 48%; }
+  html[data-theme='light'] .am-cmd:nth-child(8)  { --x: 66%; --t: 56s; --d: -18s; --y: 78%; }
+  html[data-theme='light'] .am-cmd:nth-child(9)  { --x: 8%;  --t: 74s; --d: -66s; --y: 25%; }
+  html[data-theme='light'] .am-cmd:nth-child(10) { --x: 76%; --t: 60s; --d: -28s; --y: 62%; }
+  html[data-theme='light'] .am-cmd:nth-child(11) { --x: 30%; --t: 66s; --d: -5s;  --y: 8%;  }
+  html[data-theme='light'] .am-cmd:nth-child(12) { --x: 60%; --t: 80s; --d: -45s; --y: 40%; }
+
+  /* phones — keep the paper airy: half the lines, the rest would
+     only clip against the narrow viewport */
+  @media (max-width: 40rem) {
+    html[data-theme='light'] .am-cmd:nth-child(n + 7) {
+      display: none;
+    }
+  }
+
+  /* reduced motion — freeze the drift into a still scatter of
+     watermark lines. (The global 0.01ms clamp would otherwise park
+     them off-screen where the layer reads as nothing; a static
+     watermark keeps the mood without the motion.) */
+  @media (prefers-reduced-motion: reduce) {
+    html[data-theme='light'] .am-cmd {
+      animation: none;
+      top: var(--y);
+    }
+  }
+
   /* -- ambient edges --------------------------------------------------
      line-number gutter (left, desktop only) + film sprocket rail
      (right, every viewport — phones get a slim mini strip tucked
@@ -238,6 +366,17 @@ const ogImageURL = new URL(ogImage.src, siteUrl).href;
       background-size: 18px 34px;
       filter: none;
     }
+  }
+
+  /* paper perforations — on cream stock the holes read as debossed
+     punches in the page edge: swap the dark tile for a warm-grey one
+     (the light twin of --line-strong) and drop the narrow-screen
+     brightness lift; the light tile already sits far enough from
+     the paper ground. One rule covers both breakpoints — it beats
+     the base tile and the media-query tile on specificity. */
+  html[data-theme='light'] .edge-rail {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='34'%3E%3Crect x='3' y='8' width='12' height='18' rx='2.5' fill='%23b8b099'/%3E%3C/svg%3E");
+    filter: none;
   }
 
   /* -- viewfinder readout ------------------------------------------------

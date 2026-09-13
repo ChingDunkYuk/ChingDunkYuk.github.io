@@ -15,6 +15,8 @@ export const en = {
     langLabel: 'Language',
     langEn: 'EN',
     langZh: '繁中',
+    themeToLight: 'Switch to light theme',
+    themeToDark: 'Switch to dark theme',
   },
 
   hero: {

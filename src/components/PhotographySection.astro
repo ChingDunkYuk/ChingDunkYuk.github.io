@@ -170,6 +170,16 @@ const featuredPhotos = photography.filter((p) => p.featured);
     margin-top: 0.5rem;
   }
 
+  /* paper proof sheet — on light ground the strip becomes a print
+     proof: the perforations are punched through warm-grey card
+     (a shade deeper than the light rail tile, to hold their own
+     against the --surface-dim panel) instead of glowing on dark
+     acetate. */
+  html[data-theme='light'] .ph-strip::before,
+  html[data-theme='light'] .ph-strip::after {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='7'%3E%3Crect x='3' y='1' width='8' height='5' rx='1.5' fill='%23a89f88'/%3E%3C/svg%3E");
+  }
+
   .ph-strip .ph-img {
     border-radius: 0;
   }

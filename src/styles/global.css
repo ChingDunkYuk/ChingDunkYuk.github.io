@@ -3,8 +3,11 @@
 
    All colors, spacing and type sizes are managed here as CSS
    variables. Components should only reference variables, never
-   hard-coded values. The palette is dark-only ("darkroom"):
-   near-black bg, cream ink, amber accent.
+   hard-coded values. Dual theme: "darkroom" (dark, the default —
+   near-black bg, cream ink, amber accent) and "paper" (light).
+   The dark values below are the cascade default; the light theme
+   overrides them via html[data-theme='light'] (toggled by the
+   header switch, persisted in localStorage `tungyuk:theme`).
 ------------------------------------------------------------------- */
 
 :root {
@@ -53,6 +56,29 @@
   --radius: 3px;
   --border: 1px solid var(--line);
   --ease: cubic-bezier(0.2, 0.6, 0.2, 1);
+}
+
+/* -- color · light ("paper") ----------------------------------------
+   Mirror twin of the darkroom palette: cream paper, warm-black
+   ink, a baked-down amber that keeps AA contrast on light ground.
+   Only the 9 color tokens change — every component reads them
+   through the same variables. Hard-coded decorations that can't
+   follow tokens (sprocket SVGs, the logo) get their own
+   [data-theme='light'] overrides in their components.
+   Contrast on the paper ground (audited): ink 14:1, ink-soft 6.5:1,
+   ink-faint 4.8:1, accent 5.0:1 — all clear the AA bar. */
+html[data-theme='light'] {
+  --bg: #f4f1e8; /* cream stock — the contact sheet flipped over */
+  --surface-dim: #eae5d6; /* a shade deeper: tooltips, inset panels */
+  --ink: #262219; /* warm-black ink */
+  --ink-soft: #5b5647;
+  --ink-faint: #6f6a5a;
+  --line: #dcd6c4;
+  --line-strong: #b8b099;
+  --accent: #96581d; /* baked-down amber — phosphor read in daylight */
+  --accent-soft: rgba(150, 88, 29, 0.12);
+  /* ghost ink for the floating-command watermark layer */
+  --ambient-ink: rgba(38, 35, 29, 0.09);
 }
 
 /* -- reset --------------------------------------------------------- */

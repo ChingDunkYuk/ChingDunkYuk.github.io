@@ -20,6 +20,8 @@ export const zhHK: UIStrings = {
     langLabel: '語言',
     langEn: 'EN',
     langZh: '繁中',
+    themeToLight: '切換淺色主題',
+    themeToDark: '切換深色主題',
   },
 
   hero: {

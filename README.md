@@ -18,7 +18,8 @@ Astro 静态个人网站，双语（en / 繁中），部署在 GitHub Pages。
     │   ├── photography.ts   # 照片登记（featured 控制上不上首页）
     │   ├── now.ts           # 「而家搞緊」条目 + 日期戳
     │   ├── writing.ts       # 文章列表
-    │   └── navigation.ts    # 顶部导航（id + 双语 label + 图标 path）
+    │   ├── navigation.ts    # 顶部导航（id + 双语 label + 图标 path）
+    │   └── ambient.ts       # 浅色主题的漂浮终端命令（水印层文案）
     ├── i18n/
     │   ├── config.ts        # locale 路由（/ 与 /zh-hk/）
     │   ├── en.ts            # 英文界面文案（字典结构的源头）
@@ -27,12 +28,12 @@ Astro 静态个人网站，双语（en / 繁中），部署在 GitHub Pages。
     │   └── index.ts         # 所有数据文件的 TypeScript 类型
     ├── components/          # Header / Footer + 六个 section 组件
     ├── layouts/
-    │   └── BaseLayout.astro # <head>、菲林边装饰、回顶按钮
+    │   └── BaseLayout.astro # <head>、菲林边装饰、主题切换、回顶按钮
     ├── pages/
     │   ├── index.astro      # /        （英文）
     │   └── zh-hk/index.astro# /zh-hk/  （繁中）
     ├── assets/photos/       # 照片源文件（original/ 内的原图不入库）
-    └── styles/global.css    # 全局 token、reset、公共样式
+    └── styles/global.css    # 全局 token（深 / 浅双主题）、reset、公共样式
 ```
 
 ## 怎么改内容
@@ -83,6 +84,27 @@ Astro 静态个人网站，双语（en / 繁中），部署在 GitHub Pages。
 复制 `<path d="…">` 内容填进 `icon` 即可，无需装任何图标库。每个图标悬停
 （或键盘聚焦）时有专属微动画（沙漏翻转 / 终端闪屏 / 胶片过片 / 书页翻面 /
 对焦缩放），keyframes 定义在 `Header.astro`，按 `data-icon` 关联。
+
+**主题（深色 / 浅色）** → `src/styles/global.css` + `src/data/ambient.ts`
+
+双主题：darkroom（深色，默认——菲林暗房）与 paper（浅色——冲印样张）。
+
+- 全部颜色走 `:root` 里的 token（深色默认值），浅色只在
+  `html[data-theme='light']` 块里覆盖同名 token——改任何一边都不会波及另一
+  边；组件永远只引用变量，不写死颜色。
+- 切换按钮在 Header（图标永远显示「将要切到」的主题），选择存在
+  localStorage `tungyuk:theme`（GitHub Pages 同 origin 多项目共存，key 带
+  前缀防撞），首次访问默认深色。恢复脚本在 BaseLayout `<head>` 里
+  `is:inline`，先于首绘执行，不会闪。
+- 少数没法走 token 的硬编码装饰（Header 的奶油 logo、菲林齿孔 data-URI）
+  在各自组件里有对应的 `[data-theme='light']` 覆盖：logo 用 CSS filter 重
+  上墨（不新增图片资产），齿孔 tile 换暖灰。
+- 浅色专属的「漂浮终端命令」水印：文案在 `src/data/ambient.ts`（保持短
+  小，长了会在窄屏被裁）；每条的泳道 / 时长 / 相位 / 静止位由
+  BaseLayout.astro 按 `nth-child` 索引分配——纯 CSS、服务端渲染、每次
+  访问分布一致；深色下整层 `display: none`，对深色像素零影响。
+- 无障碍：`prefers-reduced-motion` 下命令层冻结为静止散布；两套色板的
+  正文对比度均过 WCAG AA（浅色数值审计记录在 global.css 注释里）。
 
 **改界面文案 / 翻译** → `src/i18n/en.ts` 和 `src/i18n/zh-hk.ts`
 
