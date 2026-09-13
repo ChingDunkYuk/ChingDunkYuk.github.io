@@ -1,11 +1,15 @@
 import { en } from './en';
 import { zhHK } from './zh-hk';
+import { DEFAULT_LOCALE, type Locale } from '../types';
+
+// Re-exported for convenience — existing imports keep working.
+export type { Locale };
 
 /**
  * Locale registry. The URL prefix ("zh-hk") and the html lang
  * attribute ("zh-HK") are intentionally separate concerns.
  *
- * Routes (matches astro.config.mjs `i18n`):
+ * Routes (matches astro.config.ts `i18n`):
  *   en    → /            (default, no prefix)
  *   zh-hk → /zh-hk/
  *
@@ -13,9 +17,7 @@ import { zhHK } from './zh-hk';
  *   localizePath('/writing/', 'en')    → '/writing/'
  *   localizePath('/writing/', 'zh-hk') → '/zh-hk/writing/'
  */
-export const defaultLocale = 'en';
-
-export type Locale = 'en' | 'zh-hk';
+export const defaultLocale = DEFAULT_LOCALE;
 
 /** Locale → BCP-47 value for the <html lang> attribute. */
 export const htmlLang: Record<Locale, string> = {

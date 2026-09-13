@@ -1,0 +1,123 @@
+---
+import { getDict, type Locale } from '../i18n/config';
+import { site } from '../config/site';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const t = getDict(locale);
+
+// CJK glyphs do not italicize — the serif quote stays upright in
+// Chinese instead of getting a faux-oblique slant.
+const upright = locale !== 'en';
+---
+
+<!-- ============ hero ============ -->
+<section class="hero" aria-label={t.hero.region}>
+  <div class="container">
+    <p class="prompt mono">{t.hero.prompt}</p>
+    <h1>{site.name}</h1>
+    <p class="role mono">{t.hero.role}</p>
+
+    <p class:list={['quote', { upright }]}>{t.hero.quote}</p>
+    <p class="quote-note mono">
+      {t.hero.note}<span class="cursor" aria-hidden="true"></span>
+    </p>
+
+    <a class="scroll-hint mono" href="#now">
+      <span aria-hidden="true">&darr;</span> {t.hero.scroll}
+    </a>
+  </div>
+</section>
+
+<style>
+  /* ---------- hero (~80vh, next section peeks below) ---------- */
+  .hero {
+    min-height: calc(80vh - var(--header-h));
+    min-height: calc(80svh - var(--header-h));
+    display: flex;
+    align-items: center;
+    padding-block: var(--space-7) var(--space-6);
+  }
+
+  .prompt {
+    color: var(--accent);
+    font-size: var(--text-sm);
+    margin-bottom: var(--space-4);
+  }
+
+  .hero h1 {
+    font-size: var(--text-hero);
+    font-weight: 700;
+    line-height: 1.02;
+    letter-spacing: -0.035em;
+    margin-bottom: var(--space-4);
+  }
+
+  .role {
+    color: var(--ink-soft);
+    font-size: var(--text-md);
+    margin-bottom: var(--space-7);
+  }
+
+  .quote {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-size: clamp(1.25rem, 1rem + 1vw, 1.625rem);
+    line-height: 1.5;
+    max-width: 34ch;
+    margin-bottom: var(--space-4);
+  }
+
+  .quote.upright {
+    font-style: normal;
+  }
+
+  .quote-note {
+    color: var(--ink-faint);
+    font-size: var(--text-sm);
+  }
+
+  .cursor {
+    display: inline-block;
+    width: 0.55em;
+    height: 1.05em;
+    margin-left: 0.15em;
+    vertical-align: text-bottom;
+    background: var(--ink-faint);
+    animation: blink 1.2s steps(1) infinite;
+  }
+
+  @keyframes blink {
+    50% {
+      opacity: 0;
+    }
+  }
+
+  .scroll-hint {
+    display: inline-block;
+    margin-top: var(--space-6);
+    font-size: var(--text-xs);
+    color: var(--ink-faint);
+    text-decoration: none;
+    letter-spacing: 0.04em;
+  }
+
+  .scroll-hint:hover {
+    color: var(--accent);
+  }
+
+  /* ---------- small screens ---------- */
+  @media (max-width: 30rem) {
+    /* keep the role line on one line */
+    .role {
+      font-size: var(--text-base);
+    }
+
+    .scroll-hint {
+      margin-top: var(--space-5);
+    }
+  }
+</style>

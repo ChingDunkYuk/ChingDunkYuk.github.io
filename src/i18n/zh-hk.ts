@@ -17,11 +17,6 @@ export const zhHK: UIStrings = {
 
   header: {
     navLabel: '主目錄',
-    now: '近況',
-    projects: '項目',
-    photography: '攝影',
-    writing: '文章',
-    about: '關於',
     langLabel: '語言',
     langEn: 'EN',
     langZh: '繁中',
@@ -44,54 +39,20 @@ export const zhHK: UIStrings = {
     about: '關於',
   },
 
-  // 而家搞緊乜——短期紀錄，焦點一轉就換。`updated` 用沖曬做梗。
+  // 而家搞緊乜——條目本身喺 src/data/now.ts。`updatedPrefix` 係
+  // readout 底部日期戳前面嘅沖曬字眼。
   now: {
     prompt: '$ cat now.md',
-    items: [
-      { k: 'what2eat', v: '計劃緊開發月度報告。' },
-      { k: 'random city', v: '追加緊新功能。' },
-      { k: 'ricoh gxr', v: '計劃搜刮一台——模組化老相機，二手市場巡緊。' },
-      { k: '呢個網站', v: '有得搞就搞——菲林邊、水印，仲有下一個小念頭。' },
-    ],
-    updated: '最近沖曬 · 2026-09',
+    updatedPrefix: '最近沖曬',
   },
 
-  // 專案名稱保留英文原名，只翻譯描述同界面文字。
-  projects: [
-    {
-      name: 'What2Eat',
-      description:
-        '每日最難解嘅問題，外判俾程式——一個專門回答「今日食乜好」嘅小型決策引擎。',
-      meta: '運行中 · android app · 決策引擎',
-    },
-    {
-      name: 'Random City',
-      description: '諗唔到下一站去邊？擲骰話事——行程自理。',
-      meta: 'beta · android app · 旅行',
-    },
-    {
-      name: 'TrainSense',
-      description:
-        '訓練負載、睡眠、靜止心率——呢個系統我睇得比 production 仲緊。健康數據，不搞遊戲化。',
-      meta: '開發中 · 健康 · 自我追蹤',
-    },
-  ],
+  // 項目卡片喺 src/data/projects.ts。
+  // 文章條目喺 src/data/writing.ts。
 
   photography: {
     listLabel: '照片',
     frames: ['未曝光', '沖晒中', '漏光', '未影'],
     note: '暗房趕工中——菲林掃描同 contact sheet 稍後登場。',
-  },
-
-  writing: {
-    posts: [
-      {
-        time: '撰寫中',
-        title: '第一篇，仲晾緊',
-        excerpt:
-          '暫時未有文章出街——講 uptime、side projects 同攝影嘅草稿一直堆積中，第一篇就快面世。',
-      },
-    ],
   },
 
   about: {

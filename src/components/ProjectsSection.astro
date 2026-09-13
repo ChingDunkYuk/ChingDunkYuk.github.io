@@ -1,0 +1,124 @@
+---
+import { getDict, type Locale } from '../i18n/config';
+import { projects } from '../data/projects';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const t = getDict(locale);
+---
+
+<!-- ============ 02 · selected projects ============ -->
+<section class="section" id="projects">
+  <div class="container">
+    <header class="section-head">
+      <span class="index" aria-hidden="true">02</span>
+      <h2>{t.sections.projects}</h2>
+    </header>
+
+    <ul class="project-grid" role="list">
+      {
+        projects.map((project) => {
+          // no `github` field means "not published yet" — no
+          // external affordances.
+          const href = project.github ?? '#';
+          const external = href !== '#';
+          return (
+            <li class="project">
+              <h3>
+                <a
+                  href={href}
+                  target={external ? '_blank' : undefined}
+                  rel={external ? 'noopener noreferrer' : undefined}
+                >
+                  {project.title}
+                  {external && (
+                    <span class="ext mono" aria-hidden="true">
+                      &nearr;
+                    </span>
+                  )}
+                </a>
+              </h3>
+              <p class="desc">{project.description[locale]}</p>
+              <p class="meta mono">{project.status[locale]}</p>
+            </li>
+          );
+        })
+      }
+    </ul>
+  </div>
+</section>
+
+<style>
+  /* ---------- projects (editorial list, not cards) ---------- */
+  .project-grid {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: 1fr;
+    row-gap: var(--space-7);
+    column-gap: var(--space-6);
+  }
+
+  @media (min-width: 48rem) {
+    .project-grid {
+      grid-template-columns: repeat(3, 1fr);
+      row-gap: var(--space-8);
+    }
+  }
+
+  .project {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    border-top: 1px solid var(--line-strong);
+    padding-top: var(--space-4);
+    transition: border-color 160ms var(--ease);
+  }
+
+  .project:hover {
+    border-top-color: var(--accent);
+  }
+
+  .project h3 {
+    font-size: var(--text-xl);
+    font-weight: 700;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+  }
+
+  .project h3 a {
+    text-decoration: none;
+  }
+
+  .project h3 a:hover {
+    color: var(--accent);
+    text-decoration: underline;
+    text-underline-offset: 6px;
+  }
+
+  /* small off-site indicator next to linked project names */
+  .project h3 .ext {
+    font-size: var(--text-md);
+    font-weight: 400;
+    color: var(--ink-faint);
+    margin-left: var(--space-1);
+    vertical-align: 0.4em;
+  }
+
+  .desc {
+    flex: 1;
+    color: var(--ink);
+    font-size: var(--text-base);
+    line-height: 1.6;
+  }
+
+  .meta {
+    color: var(--ink-faint);
+    font-size: var(--text-xs);
+    letter-spacing: 0.01em;
+  }
+</style>

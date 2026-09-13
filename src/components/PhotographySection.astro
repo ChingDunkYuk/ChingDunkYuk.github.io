@@ -1,0 +1,186 @@
+---
+import { getDict, type Locale } from '../i18n/config';
+import { photography } from '../data/photography';
+import { Image } from 'astro:assets';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const t = getDict(locale);
+
+// Frame layout slots (aspect ratios live in the styles below).
+const frameSlots = ['ph-a', 'ph-b', 'ph-c', 'ph-d'];
+
+// Homepage shows the featured shots only — the rest of
+// src/data/photography.ts is reserved for the future page.
+const featuredPhotos = photography.filter((p) => p.featured);
+---
+
+<!-- ============ 03 · photography ============ -->
+<section class="section" id="photography">
+  <div class="container">
+    <header class="section-head">
+      <span class="index" aria-hidden="true">03</span>
+      <h2>{t.sections.photography}</h2>
+    </header>
+
+    <!-- Irregular frame sizes: each photo keeps its own aspect
+         ratio, only the column span differs per slot. -->
+    <div class="photo-grid" role="list" aria-label={t.photography.listLabel}>
+      {
+        featuredPhotos.length > 0 ? (
+          featuredPhotos.map((photo, i) => (
+            <figure class:list={['ph', 'ph-strip', photo.slot]} role="listitem">
+              <Image
+                class="ph-img"
+                src={photo.src}
+                alt={photo.alt?.[locale] ?? ''}
+                widths={[480, 960, 1440]}
+                sizes="(min-width: 48rem) 50vw, 100vw"
+                loading="lazy"
+                decoding="async"
+              />
+              <figcaption class="mono">
+                {String(i + 1).padStart(2, '0')} &middot; {photo.caption[locale]}
+              </figcaption>
+            </figure>
+          ))
+        ) : (
+          t.photography.frames.map((label, i) => (
+            <figure class:list={['ph', frameSlots[i]]} role="listitem">
+              <div class="ph-frame" />
+              <figcaption class="mono">
+                {String(i + 1).padStart(2, '0')} &middot; {label}
+              </figcaption>
+            </figure>
+          ))
+        )
+      }
+    </div>
+
+    {featuredPhotos.length === 0 && <p class="section-note">{t.photography.note}</p>}
+  </div>
+</section>
+
+<style>
+  /* ---------- photography (irregular contact sheet) ---------- */
+  .photo-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-4) var(--space-3);
+  }
+
+  @media (min-width: 48rem) {
+    .photo-grid {
+      grid-template-columns: repeat(6, 1fr);
+      gap: var(--space-5) var(--space-4);
+    }
+
+    .ph-a {
+      grid-column: span 2;
+    }
+
+    .ph-b {
+      grid-column: span 4;
+    }
+
+    .ph-c {
+      grid-column: span 3;
+    }
+
+    .ph-d {
+      grid-column: span 3;
+    }
+  }
+
+  .ph {
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+
+  .ph-frame {
+    background: var(--surface-dim);
+    border: 1px dashed var(--line-strong);
+    border-radius: var(--radius);
+    transition: border-color 160ms var(--ease);
+  }
+
+  /* real photos: full width of the slot, own aspect ratio */
+  .ph-img {
+    width: 100%;
+    height: auto;
+    border-radius: var(--radius);
+  }
+
+  .ph:hover .ph-frame {
+    border-color: var(--accent);
+  }
+
+  /* one aspect ratio per frame — sizes stay irregular when
+     real photos replace the placeholders */
+  .ph-a .ph-frame {
+    aspect-ratio: 3 / 4;
+  }
+
+  .ph-b .ph-frame {
+    aspect-ratio: 16 / 10;
+  }
+
+  .ph-c .ph-frame {
+    aspect-ratio: 1 / 1;
+  }
+
+  .ph-d .ph-frame {
+    aspect-ratio: 4 / 5;
+  }
+
+  .ph figcaption {
+    font-size: var(--text-xs);
+    color: var(--ink-faint);
+  }
+
+  /* registered photos read as strips of developed film: dark base,
+     perforation bands above and below the frame, caption set like
+     the maker's edge marking on a negative */
+  .ph-strip {
+    gap: 0;
+    padding: 0.55rem 0.4rem;
+    background: var(--surface-dim);
+    border-radius: 0.25rem;
+  }
+
+  .ph-strip::before,
+  .ph-strip::after {
+    content: '';
+    height: 0.45rem;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='7'%3E%3Crect x='3' y='1' width='8' height='5' rx='1.5' fill='%235c5240'/%3E%3C/svg%3E");
+    background-repeat: repeat-x;
+    background-position: center;
+  }
+
+  .ph-strip::before {
+    margin-bottom: 0.55rem;
+  }
+
+  .ph-strip::after {
+    margin-top: 0.5rem;
+  }
+
+  .ph-strip .ph-img {
+    border-radius: 0;
+  }
+
+  .ph-strip figcaption {
+    margin-top: 0.4rem;
+    padding-inline: 0.2rem;
+    text-align: center;
+    font-size: 0.5625rem;
+    letter-spacing: 0.28em;
+    color: var(--accent);
+    opacity: 0.8;
+  }
+</style>

@@ -1,0 +1,225 @@
+---
+import { getDict, localeBase, type Locale } from '../i18n/config';
+import { site } from '../config/site';
+import { navItems } from '../data/navigation';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const t = getDict(locale);
+---
+
+<header class="site-header">
+  <div class="container header-inner">
+    <a class="wordmark mono" href={localeBase[locale]}>
+      <span class="logo-wrap">
+        <img
+          class="logo logo-cream"
+          src={site.logo.default}
+          alt=""
+          width="725"
+          height="834"
+          decoding="async"
+        />
+        <img
+          class="logo logo-amber"
+          src={site.logo.hover}
+          alt=""
+          width="111"
+          height="128"
+          decoding="async"
+        />
+      </span>
+      ~/tungyuk<span class="word-cursor" aria-hidden="true"></span>
+    </a>
+
+    <div class="header-right">
+      <nav class="site-nav mono" aria-label={t.header.navLabel}>
+        {
+          navItems.map((item) => (
+            <a href={`#${item.id}`}>{item.label[locale]}</a>
+          ))
+        }
+      </nav>
+
+      <nav class="lang-switch mono" aria-label={t.header.langLabel}>
+        <a href={localeBase.en} data-lang-switch aria-current={locale === 'en' ? 'true' : undefined}>
+          {t.header.langEn}
+        </a>
+        <span class="sep" aria-hidden="true">/</span>
+        <a href={localeBase['zh-hk']} data-lang-switch aria-current={locale === 'zh-hk' ? 'true' : undefined}>
+          {t.header.langZh}
+        </a>
+      </nav>
+    </div>
+  </div>
+</header>
+
+<style>
+  .site-header {
+    border-bottom: var(--border);
+  }
+
+  .header-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-3) var(--space-5);
+    flex-wrap: wrap;
+    min-height: var(--header-h);
+    padding-block: var(--space-2);
+  }
+
+  .wordmark {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-3);
+    font-size: var(--text-sm);
+    font-weight: 600;
+    text-decoration: none;
+  }
+
+  /* the logo mark is cream-on-transparent, tuned for the dark bg;
+     an amber twin sits on top for the hover crossfade */
+  .logo-wrap {
+    position: relative;
+    display: block;
+    flex: none;
+    height: 32px;
+    aspect-ratio: 725 / 834;
+    transition: transform 0.9s var(--ease);
+  }
+
+  .logo-wrap .logo {
+    position: absolute;
+    inset: 0;
+    height: 100%;
+    width: 100%;
+    object-fit: contain;
+  }
+
+  .logo-cream,
+  .logo-amber {
+    transition: opacity 0.4s var(--ease);
+  }
+
+  .logo-amber {
+    opacity: 0;
+  }
+
+  /* phosphor tube ignition — one quick flicker on page load, then steady */
+  .logo-cream {
+    animation: logo-boot 0.8s 0.1s linear backwards;
+  }
+
+  @keyframes logo-boot {
+    0% { opacity: 0; }
+    10% { opacity: 0; }
+    14% { opacity: 0.85; }
+    18% { opacity: 0.1; }
+    26% { opacity: 1; }
+    32% { opacity: 0.3; }
+    42% { opacity: 1; }
+    50% { opacity: 0.75; }
+    62% { opacity: 1; }
+    100% { opacity: 1; }
+  }
+
+  /* hover / keyboard focus: slow dial turn, cream mark crossfades to amber */
+  .wordmark:hover .logo-wrap,
+  .wordmark:focus-visible .logo-wrap {
+    transform: rotate(90deg);
+  }
+
+  .wordmark:hover .logo-cream,
+  .wordmark:focus-visible .logo-cream {
+    opacity: 0;
+  }
+
+  .wordmark:hover .logo-amber,
+  .wordmark:focus-visible .logo-amber {
+    opacity: 1;
+  }
+
+  .wordmark:hover {
+    color: var(--accent);
+  }
+
+  /* terminal block cursor — echoes the hero blink, joins the amber
+     crossfade on hover */
+  .word-cursor {
+    display: inline-block;
+    width: 0.55em;
+    height: 1.05em;
+    margin-left: 0.15em;
+    vertical-align: text-bottom;
+    background: var(--ink-faint);
+    animation: wordmark-blink 1.2s steps(1) infinite;
+    transition: background 0.4s var(--ease);
+  }
+
+  @keyframes wordmark-blink {
+    50% {
+      opacity: 0;
+    }
+  }
+
+  .wordmark:hover .word-cursor,
+  .wordmark:focus-visible .word-cursor {
+    background: var(--accent);
+  }
+
+  .header-right {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--space-2) var(--space-5);
+  }
+
+  .site-nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2) var(--space-4);
+    font-size: var(--text-sm);
+  }
+
+  .site-nav a {
+    color: var(--ink-soft);
+    text-decoration: none;
+    /* invisible tap-area padding for small screens */
+    padding-block: 6px;
+  }
+
+  .site-nav a:hover {
+    color: var(--accent);
+  }
+
+  .lang-switch {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-size: var(--text-sm);
+    border-left: var(--border);
+    padding-left: var(--space-4);
+  }
+
+  .lang-switch a {
+    color: var(--ink-faint);
+    text-decoration: none;
+    padding-block: 6px;
+  }
+
+  .lang-switch a:hover {
+    color: var(--accent);
+  }
+
+  .lang-switch a[aria-current='true'] {
+    color: var(--ink);
+  }
+
+  .lang-switch .sep {
+    color: var(--ink-faint);
+  }
+</style>

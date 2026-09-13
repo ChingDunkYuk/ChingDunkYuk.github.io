@@ -12,11 +12,6 @@ export const en = {
 
   header: {
     navLabel: 'Primary',
-    now: 'Now',
-    projects: 'Projects',
-    photography: 'Photography',
-    writing: 'Writing',
-    about: 'About',
     langLabel: 'Language',
     langEn: 'EN',
     langZh: '繁中',
@@ -39,57 +34,21 @@ export const en = {
     about: 'About',
   },
 
-  // What's on the bench right now — short-lived entries, swapped out
-  // whenever the focus shifts. `updated` is the darkroom pun for the
-  // stamp at the bottom of the readout.
+  // What's on the bench right now — the entries themselves live in
+  // src/data/now.ts. `updatedPrefix` is the darkroom pun beside the
+  // date stamp at the bottom of the readout.
   now: {
     prompt: '$ cat now.md',
-    items: [
-      { k: 'what2eat', v: 'planning the monthly report feature.' },
-      { k: 'random city', v: 'adding the next round of features.' },
-      { k: 'ricoh gxr', v: 'hunting the used market for one — the modular old camera.' },
-      { k: 'this site', v: 'endless tinkering — film edges, watermarks, and the next small idea.' },
-    ],
-    updated: 'last developed · 2026-09',
+    updatedPrefix: 'last developed',
   },
 
-  // Project names stay in English across locales; only the copy translates.
-  projects: [
-    {
-      name: 'What2Eat',
-      description:
-        "The hardest question of the day, outsourced. A small decision engine for “what's for lunch?”",
-      meta: 'running · android app · decision engine',
-    },
-    {
-      name: 'Random City',
-      description:
-        "Can't decide where to go next? Let the dice pick a city — itinerary not included.",
-      meta: 'beta · android app · travel',
-    },
-    {
-      name: 'TrainSense',
-      description:
-        'Training load, sleep, resting heart rate — the one system I monitor more closely than production. Health data, no gamification.',
-      meta: 'building · health · self-tracking',
-    },
-  ],
+  // Project cards live in src/data/projects.ts.
+  // Writing entries live in src/data/writing.ts.
 
   photography: {
     listLabel: 'Photos',
     frames: ['unexposed', 'developing', 'light leak', 'not yet shot'],
     note: 'Darkroom in progress — film scans and contact sheets will land here.',
-  },
-
-  writing: {
-    posts: [
-      {
-        time: 'drafting',
-        title: 'First post, still drying',
-        excerpt:
-          'Nothing published yet — drafts on uptime, side projects, and photography are stacking up. The first one is close.',
-      },
-    ],
   },
 
   about: {

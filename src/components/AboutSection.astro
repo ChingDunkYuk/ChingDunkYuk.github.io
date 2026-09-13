@@ -1,0 +1,104 @@
+---
+import { getDict, type Locale } from '../i18n/config';
+import { site } from '../config/site';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const t = getDict(locale);
+
+// CJK glyphs do not italicize — the email placeholder stays
+// upright in Chinese instead of getting a faux-oblique slant.
+const upright = locale !== 'en';
+---
+
+<!-- ============ 05 · about ============ -->
+<section class="section" id="about">
+  <div class="container">
+    <header class="section-head">
+      <span class="index" aria-hidden="true">05</span>
+      <h2>{t.sections.about}</h2>
+    </header>
+
+    <div class="about">
+      <div class="about-text">
+        {t.about.paragraphs.map((paragraph) => <p>{paragraph}</p>)}
+      </div>
+
+      <ul class="contact mono" role="list">
+        <li>
+          <span class="k">{t.about.githubLabel}</span>
+          <a href={site.github} rel="me noopener noreferrer" target="_blank">
+            github.com/{site.githubHandle} <span aria-hidden="true">&nearr;</span>
+          </a>
+        </li>
+        <li>
+          <span class="k">{t.about.emailLabel}</span>
+          <span class:list={['pending', { upright }]}>{t.about.emailPending}</span>
+        </li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<style>
+  /* ---------- about (prose + contact) ---------- */
+  .about {
+    max-width: 44rem;
+  }
+
+  .about-text p {
+    max-width: 58ch;
+    color: var(--ink-soft);
+  }
+
+  .about-text p + p {
+    margin-top: var(--space-3);
+  }
+
+  .about-text p:first-child {
+    color: var(--ink);
+  }
+
+  .contact {
+    list-style: none;
+    margin: var(--space-6) 0 0;
+    padding: var(--space-4) 0 0;
+    border-top: var(--border);
+    display: grid;
+    gap: var(--space-2);
+    font-size: var(--text-sm);
+  }
+
+  .contact li {
+    display: grid;
+    grid-template-columns: 6rem 1fr;
+    gap: var(--space-3);
+  }
+
+  .contact .k {
+    color: var(--ink-faint);
+  }
+
+  .contact a {
+    color: var(--ink);
+    text-decoration: none;
+  }
+
+  .contact a:hover {
+    color: var(--accent);
+    text-decoration: underline;
+    text-underline-offset: 4px;
+  }
+
+  .contact .pending {
+    color: var(--ink-faint);
+    font-style: italic;
+  }
+
+  .contact .pending.upright {
+    font-style: normal;
+  }
+</style>

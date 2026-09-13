@@ -27,6 +27,7 @@ pnpm-debug.log*
 AGENTS.md
 CLAUDE.md
 .vscode/
+.trae/
 
 # photo originals — watermarked copies in src/assets/photos/ are
 # what gets committed; originals never leave the machine

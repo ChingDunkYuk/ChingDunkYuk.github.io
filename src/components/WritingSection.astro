@@ -1,0 +1,84 @@
+---
+import { getDict, type Locale } from '../i18n/config';
+import { writing } from '../data/writing';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const t = getDict(locale);
+---
+
+<!-- ============ 04 · writing ============ -->
+<section class="section" id="writing">
+  <div class="container">
+    <header class="section-head">
+      <span class="index" aria-hidden="true">04</span>
+      <h2>{t.sections.writing}</h2>
+    </header>
+
+    <ul class="post-list" role="list">
+      {
+        writing.map((post) => (
+          <li class="post" role="listitem">
+            <time class="mono">{post.time[locale]}</time>
+            <div class="post-body">
+              <h3>{post.title[locale]}</h3>
+              <p>{post.excerpt[locale]}</p>
+            </div>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>
+
+<style>
+  /* ---------- writing (plain post list) ---------- */
+  .post-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    max-width: 42rem;
+  }
+
+  .post {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-1);
+    padding-block: var(--space-4);
+  }
+
+  .post + .post {
+    border-top: var(--border);
+    padding-block: var(--space-5);
+  }
+
+  @media (min-width: 40rem) {
+    .post {
+      grid-template-columns: 7rem 1fr;
+      gap: var(--space-4);
+      padding-block: var(--space-5);
+    }
+  }
+
+  .post time {
+    color: var(--ink-faint);
+    font-size: var(--text-sm);
+    padding-top: 2px;
+  }
+
+  .post h3 {
+    font-size: var(--text-md);
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+
+  .post p {
+    margin-top: var(--space-1);
+    color: var(--ink-soft);
+    font-size: var(--text-sm);
+    line-height: 1.6;
+  }
+</style>
