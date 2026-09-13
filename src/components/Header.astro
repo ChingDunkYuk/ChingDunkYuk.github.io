@@ -89,6 +89,16 @@ const t = getDict(locale);
 
 <style>
   .site-header {
+    position: sticky;
+    top: 0;
+    /* above the edge decorations & the to-top readout (z 50),
+       below the film grain (z 999) — grain sits on the print */
+    z-index: 60;
+    /* opaque fallback; the color-mix line wins where supported */
+    background: var(--bg);
+    background: color-mix(in srgb, var(--bg) 85%, transparent);
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
     border-bottom: var(--border);
   }
 
@@ -219,6 +229,10 @@ const t = getDict(locale);
     align-items: center;
     flex-wrap: wrap;
     gap: var(--space-2) var(--space-5);
+    /* the condense fade — opacity only, never display/visibility:
+       links keep their box (no layout shift under a sticky bar),
+       stay in the tab order, and stop eating clicks when hidden */
+    transition: opacity 0.3s var(--ease);
   }
 
   .site-nav {
@@ -446,4 +460,63 @@ const t = getDict(locale);
   .lang-switch .sep {
     color: var(--ink-faint);
   }
+
+  /* -- immersive condense ----------------------------------------------
+     Scrolled into the page, the crown keeps only the wordmark:
+     the whole right side (nav / theme / language) fades out so
+     the reading is uninterrupted. It returns near the top; while
+     condensed, hovering the bar or tabbing into it brings the
+     chrome back for as long as it's needed. */
+  .site-header.is-condensed .header-right {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  /* keyboard reveal — any device: Tab into the wordmark or deeper
+     and the chrome comes back while focus is inside the bar */
+  .site-header.is-condensed:focus-within .header-right {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  /* hover reveal — real pointers only, so a touch tap can't latch
+     the sticky-hover state (same gate as the nav tooltips). The
+     pointer-events: none on .header-right doesn't block this:
+     hit-testing falls through to the .site-header itself. */
+  @media (hover: hover) {
+    .site-header.is-condensed:hover .header-right {
+      opacity: 1;
+      pointer-events: auto;
+    }
+  }
 </style>
+
+<script>
+  // Condense on scroll: past the threshold the whole right side
+  // (nav / theme / language) fades to just the wordmark; it only
+  // comes back near the top. Hysteresis (collapse past 160px,
+  // restore below 64px) keeps the boundary from flickering.
+  // Same rAF-throttle shape as the layout's other listeners.
+  const header = document.querySelector<HTMLElement>('.site-header');
+  if (header) {
+    const COLLAPSE_AT = 160; // px — ~2.5 header heights deep
+    const RESTORE_BELOW = 64; // px — ~1 header height from top
+
+    let ticking = false;
+    const update = () => {
+      ticking = false;
+      const y = window.scrollY;
+      const condensed = header.classList.contains('is-condensed');
+      if (!condensed && y > COLLAPSE_AT) header.classList.add('is-condensed');
+      else if (condensed && y < RESTORE_BELOW) header.classList.remove('is-condensed');
+    };
+    const requestTick = () => {
+      if (!ticking) {
+        ticking = true;
+        requestAnimationFrame(update);
+      }
+    };
+    window.addEventListener('scroll', requestTick, { passive: true });
+    update(); // hash-loads & restored scroll positions start deep
+  }
+</script>
