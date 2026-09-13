@@ -188,6 +188,17 @@ a {
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
+
+  /* motion-free fallback for the nav icon beats: when animations
+     are clamped, hovering still punches the icon up as an instant
+     state change (like a button changing colour — no motion, so
+     it stays friendly to reduced-motion users). Ambient autoplay
+     (the light-theme floating commands, blinks, boot flickers)
+     stays frozen. */
+  .site-nav a:hover .nav-icon,
+  .site-nav a:focus-visible .nav-icon {
+    transform: scale(1.22);
+  }
 }
 
 /* -- ambience: film grain -------------------------------------------

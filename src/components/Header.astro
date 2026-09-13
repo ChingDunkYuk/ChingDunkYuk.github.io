@@ -255,69 +255,91 @@ const t = getDict(locale);
   /* -- hover micro-animations ---------------------------------------
      One shot per icon as the cursor arrives, each themed to its
      object; replays on the next visit. Keyboard focus gets the
-     same beat via :focus-visible, matching the tooltip. Pure CSS —
-     the global prefers-reduced-motion rule kills them for users
-     who asked for less motion. */
+     same beat via :focus-visible, matching the tooltip. Pure CSS.
+
+     Written longhand on purpose: a var() inside the animation
+     shorthand hides the keyframes name from tooling (the CSSOM
+     reads animationName back empty), so every value gets its own
+     line where the name stands alone. */
   .site-nav a[data-icon='now']:hover .nav-icon,
   .site-nav a[data-icon='now']:focus-visible .nav-icon {
-    /* the hourglass flips over — the icon is vertically symmetric,
-       so the snap back on mouse-out is invisible */
-    animation: nav-hourglass 0.55s var(--ease);
+    /* the hourglass flips with an overshoot and settles upright —
+       the icon is vertically symmetric, so the end state reads as
+       the start and the snap back on mouse-out is invisible */
+    animation-name: nav-hourglass;
+    animation-duration: 0.75s;
+    animation-timing-function: var(--ease);
   }
 
   @keyframes nav-hourglass {
-    to {
-      transform: rotate(180deg);
-    }
+    0% { transform: rotate(0deg) scale(1); }
+    55% { transform: rotate(198deg) scale(1.12); }
+    78% { transform: rotate(174deg) scale(1.05); }
+    100% { transform: rotate(180deg) scale(1); }
   }
 
   .site-nav a[data-icon='projects']:hover .nav-icon,
   .site-nav a[data-icon='projects']:focus-visible .nav-icon {
-    /* the CRT retrace — a quick screen flicker */
-    animation: nav-flicker 0.45s linear;
+    /* the CRT retrace — dies hard, snaps back, dies again, holds */
+    animation-name: nav-flicker;
+    animation-duration: 0.6s;
+    animation-timing-function: linear;
   }
 
   @keyframes nav-flicker {
-    0% { opacity: 1; }
-    20% { opacity: 0.1; }
-    35% { opacity: 1; }
-    55% { opacity: 0.35; }
-    75% { opacity: 1; }
+    0% { opacity: 1; transform: translateY(0); }
+    12% { opacity: 0; transform: translateY(-1px); }
+    24% { opacity: 1; transform: translateY(0); }
+    40% { opacity: 0.15; transform: translateY(1px); }
+    54% { opacity: 1; transform: translateY(0); }
+    70% { opacity: 0.45; }
+    100% { opacity: 1; }
   }
 
   .site-nav a[data-icon='photography']:hover .nav-icon,
   .site-nav a[data-icon='photography']:focus-visible .nav-icon {
-    /* the film advance — the strip jerks one frame sideways */
-    animation: nav-advance 0.4s ease-out;
+    /* the film advance — one hard jerk with a sprocket wobble */
+    animation-name: nav-advance;
+    animation-duration: 0.6s;
+    animation-timing-function: ease-out;
   }
 
   @keyframes nav-advance {
-    0% { transform: translateX(0); }
-    40% { transform: translateX(-26%); }
-    100% { transform: translateX(0); }
+    0% { transform: translateX(0) rotate(0deg); }
+    40% { transform: translateX(-34%) rotate(-6deg); }
+    68% { transform: translateX(-26%) rotate(3deg); }
+    100% { transform: translateX(0) rotate(0deg); }
   }
 
   .site-nav a[data-icon='writing']:hover .nav-icon,
   .site-nav a[data-icon='writing']:focus-visible .nav-icon {
-    /* the page turn — the open book flips over in 2D */
-    animation: nav-pageflip 0.55s var(--ease);
+    /* the page turn — the open book flips over in 2D, fattening
+       as it comes face-on */
+    animation-name: nav-pageflip;
+    animation-duration: 0.7s;
+    animation-timing-function: var(--ease);
   }
 
   @keyframes nav-pageflip {
     50% {
-      transform: scaleX(-1);
+      transform: scaleX(-1) scale(1.16);
     }
   }
 
   .site-nav a[data-icon='about']:hover .nav-icon,
   .site-nav a[data-icon='about']:focus-visible .nav-icon {
-    /* the autofocus lock — brackets punch in, settle, done */
-    animation: nav-focus 0.4s var(--ease);
+    /* the autofocus lock — hunt past, pull through, lock */
+    animation-name: nav-focus;
+    animation-duration: 0.55s;
+    animation-timing-function: var(--ease);
   }
 
   @keyframes nav-focus {
-    40% { transform: scale(1.2); }
-    70% { transform: scale(0.94); }
+    0% { transform: scale(1); }
+    32% { transform: scale(1.45); }
+    54% { transform: scale(0.9); }
+    76% { transform: scale(1.08); }
+    100% { transform: scale(1); }
   }
 
   /* tooltip — plain visibility toggle, no animation */
