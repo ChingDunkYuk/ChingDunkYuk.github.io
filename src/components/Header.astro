@@ -313,17 +313,19 @@ const t = getDict(locale);
 
   .site-nav a[data-icon='writing']:hover .nav-icon,
   .site-nav a[data-icon='writing']:focus-visible .nav-icon {
-    /* the page turn — the open book flips over in 2D, fattening
-       as it comes face-on */
-    animation-name: nav-pageflip;
+    /* the signature — nib dips to the line, two quick strokes,
+       then lifts */
+    animation-name: nav-quill;
     animation-duration: 0.7s;
     animation-timing-function: var(--ease);
   }
 
-  @keyframes nav-pageflip {
-    50% {
-      transform: scaleX(-1) scale(1.16);
-    }
+  @keyframes nav-quill {
+    0% { transform: rotate(0deg) translateY(0); }
+    30% { transform: rotate(-14deg) translateY(7%); }
+    50% { transform: rotate(-5deg) translateY(4%); }
+    70% { transform: rotate(-13deg) translateY(6%); }
+    100% { transform: rotate(0deg) translateY(0); }
   }
 
   .site-nav a[data-icon='about']:hover .nav-icon,
