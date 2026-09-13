@@ -140,13 +140,19 @@ const ogImageURL = new URL(ogImage.src, siteUrl).href;
     </button>
 
     <script>
-      // Language switch: keep the reader on the same section by
-      // appending the current hash to the switch links. Sections use
-      // identical ids on both locales, so the anchor carries over.
+      // Language switch: keep the reader on the section they're
+      // actually reading. location.hash can't be the source of
+      // truth — a nav click sets it, but scrolling away never
+      // clears it, so the hash goes stale and the switch would
+      // yank the reader back to a section they left pages ago.
+      // Instead, track which section sits under the reading line
+      // (40% down the viewport) and write it straight onto the
+      // links. Sections share ids across locales, so the anchor
+      // carries over; above the first section the links go
+      // hash-free, landing the reader at the top.
       const links = document.querySelectorAll<HTMLAnchorElement>('a[data-lang-switch]');
 
-      const sync = () => {
-        const { hash } = location;
+      const setHref = (hash: string) => {
         links.forEach((link) => {
           const base = link.dataset.base ?? link.getAttribute('href')?.split('#')[0] ?? '/';
           link.dataset.base = base;
@@ -154,8 +160,43 @@ const ogImageURL = new URL(ogImage.src, siteUrl).href;
         });
       };
 
-      sync();
-      window.addEventListener('hashchange', sync);
+      let current = location.hash;
+      setHref(current);
+
+      const sections = Array.from(
+        document.querySelectorAll<HTMLElement>('main section[id]')
+      );
+
+      let tracking = false;
+      const track = () => {
+        tracking = false;
+        const line = window.innerHeight * 0.4;
+        let next = '';
+        for (const section of sections) {
+          if (section.getBoundingClientRect().top <= line) next = `#${section.id}`;
+          else break;
+        }
+        if (next !== current) {
+          current = next;
+          setHref(next);
+        }
+      };
+      const requestTrack = () => {
+        if (!tracking) {
+          tracking = true;
+          requestAnimationFrame(track);
+        }
+      };
+
+      // a nav click scrolls to a section — honour it, then the
+      // scroll tracker takes over again on the next scroll
+      window.addEventListener('hashchange', () => {
+        current = location.hash;
+        setHref(current);
+      });
+      window.addEventListener('scroll', requestTrack, { passive: true });
+      window.addEventListener('resize', requestTrack);
+      track();
 
       // Viewfinder readout: fade in past the first screen and
       // tick the frame counter with scroll progress (01–36 =
