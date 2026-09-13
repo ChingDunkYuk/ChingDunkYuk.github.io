@@ -80,9 +80,9 @@ Astro 静态个人网站，双语（en / 繁中），部署在 GitHub Pages。
 `d` 数据（viewBox 固定 `0 -960 960 960`，SVG 外壳由 Header.astro 统一
 提供）。换图标：到 [google/material-design-icons](https://github.com/google/material-design-icons)
 （Apache 2.0）的 `symbols/web/<名称>/materialsymbolsoutlined/<名称>_24px.svg`
-复制 `<path d="…">` 内容填进 `icon` 即可，无需装任何图标库。每个图标点击后
-有专属微动画（沙漏翻转 / 终端闪屏 / 胶片过片 / 书页翻面 / 对焦缩放），
-keyframes 定义在 `Header.astro`，按 `data-icon` 关联。
+复制 `<path d="…">` 内容填进 `icon` 即可，无需装任何图标库。每个图标悬停
+（或键盘聚焦）时有专属微动画（沙漏翻转 / 终端闪屏 / 胶片过片 / 书页翻面 /
+对焦缩放），keyframes 定义在 `Header.astro`，按 `data-icon` 关联。
 
 **改界面文案 / 翻译** → `src/i18n/en.ts` 和 `src/i18n/zh-hk.ts`
 

@@ -214,14 +214,16 @@ const t = getDict(locale);
     fill: currentColor; /* follows ink-soft → accent */
   }
 
-  /* -- click micro-animations ---------------------------------------
-     One shot per icon, each themed to its object. Triggered by the
-     .is-anim class (added on click, removed on animationend).
-     The global prefers-reduced-motion rule kills them for users
+  /* -- hover micro-animations ---------------------------------------
+     One shot per icon as the cursor arrives, each themed to its
+     object; replays on the next visit. Keyboard focus gets the
+     same beat via :focus-visible, matching the tooltip. Pure CSS —
+     the global prefers-reduced-motion rule kills them for users
      who asked for less motion. */
-  .site-nav a.is-anim[data-icon='now'] .nav-icon {
+  .site-nav a[data-icon='now']:hover .nav-icon,
+  .site-nav a[data-icon='now']:focus-visible .nav-icon {
     /* the hourglass flips over — the icon is vertically symmetric,
-       so the reset back to 0deg is invisible */
+       so the snap back on mouse-out is invisible */
     animation: nav-hourglass 0.55s var(--ease);
   }
 
@@ -231,7 +233,8 @@ const t = getDict(locale);
     }
   }
 
-  .site-nav a.is-anim[data-icon='projects'] .nav-icon {
+  .site-nav a[data-icon='projects']:hover .nav-icon,
+  .site-nav a[data-icon='projects']:focus-visible .nav-icon {
     /* the CRT retrace — a quick screen flicker */
     animation: nav-flicker 0.45s linear;
   }
@@ -244,7 +247,8 @@ const t = getDict(locale);
     75% { opacity: 1; }
   }
 
-  .site-nav a.is-anim[data-icon='photography'] .nav-icon {
+  .site-nav a[data-icon='photography']:hover .nav-icon,
+  .site-nav a[data-icon='photography']:focus-visible .nav-icon {
     /* the film advance — the strip jerks one frame sideways */
     animation: nav-advance 0.4s ease-out;
   }
@@ -255,7 +259,8 @@ const t = getDict(locale);
     100% { transform: translateX(0); }
   }
 
-  .site-nav a.is-anim[data-icon='writing'] .nav-icon {
+  .site-nav a[data-icon='writing']:hover .nav-icon,
+  .site-nav a[data-icon='writing']:focus-visible .nav-icon {
     /* the page turn — the open book flips over in 2D */
     animation: nav-pageflip 0.55s var(--ease);
   }
@@ -266,7 +271,8 @@ const t = getDict(locale);
     }
   }
 
-  .site-nav a.is-anim[data-icon='about'] .nav-icon {
+  .site-nav a[data-icon='about']:hover .nav-icon,
+  .site-nav a[data-icon='about']:focus-visible .nav-icon {
     /* the autofocus lock — brackets punch in, settle, done */
     animation: nav-focus 0.4s var(--ease);
   }
@@ -334,22 +340,3 @@ const t = getDict(locale);
     color: var(--ink-faint);
   }
 </style>
-
-<script>
-  // Click micro-animations: each nav icon plays one themed shot on
-  // click. Restart-friendly — clicking again mid-play rewinds it.
-  document.querySelectorAll('.site-nav a[data-icon]').forEach((link) => {
-    link.addEventListener('click', () => {
-      const icon = link.querySelector('.nav-icon');
-      if (!icon) return;
-      link.classList.remove('is-anim');
-      void icon.offsetWidth; // force reflow so the animation restarts
-      link.classList.add('is-anim');
-    });
-    link.addEventListener('animationend', (e) => {
-      if (e.target instanceof Element && e.target.classList.contains('nav-icon')) {
-        link.classList.remove('is-anim');
-      }
-    });
-  });
-</script>
