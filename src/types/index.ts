@@ -77,4 +77,11 @@ export interface NavItem {
   /** section id — doubles as the anchor href (#now, #projects, …) */
   id: string;
   label: LocalizedString;
+  /**
+   * Header icon — the `d` attribute of a single <path>, taken from
+   * Google Material Symbols "outlined" 24px (Apache 2.0). Drawn for
+   * the viewBox "0 -960 960 960" that Header.astro supplies.
+   * Source: github.com/google/material-design-icons
+   */
+  icon: string;
 }

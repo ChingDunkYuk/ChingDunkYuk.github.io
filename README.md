@@ -18,7 +18,7 @@ Astro 静态个人网站，双语（en / 繁中），部署在 GitHub Pages。
     │   ├── photography.ts   # 照片登记（featured 控制上不上首页）
     │   ├── now.ts           # 「而家搞緊」条目 + 日期戳
     │   ├── writing.ts       # 文章列表
-    │   └── navigation.ts    # 顶部导航
+    │   └── navigation.ts    # 顶部导航（id + 双语 label + 图标 path）
     ├── i18n/
     │   ├── config.ts        # locale 路由（/ 与 /zh-hk/）
     │   ├── en.ts            # 英文界面文案（字典结构的源头）
@@ -74,6 +74,15 @@ Astro 静态个人网站，双语（en / 繁中），部署在 GitHub Pages。
 **改导航** → `src/data/navigation.ts`
 
 `id` 必须对得上页面 section 的 id（锚点就是 `#id`）。
+
+顶部导航是纯图标：`label` 同时充当链接的 `aria-label` 和悬停 /
+键盘聚焦时的 tooltip 文案（跟随页面语言）；`icon` 是单个 `<path>` 的
+`d` 数据（viewBox 固定 `0 -960 960 960`，SVG 外壳由 Header.astro 统一
+提供）。换图标：到 [google/material-design-icons](https://github.com/google/material-design-icons)
+（Apache 2.0）的 `symbols/web/<名称>/materialsymbolsoutlined/<名称>_24px.svg`
+复制 `<path d="…">` 内容填进 `icon` 即可，无需装任何图标库。每个图标点击后
+有专属微动画（沙漏翻转 / 终端闪屏 / 胶片过片 / 书页翻面 / 对焦缩放），
+keyframes 定义在 `Header.astro`，按 `data-icon` 关联。
 
 **改界面文案 / 翻译** → `src/i18n/en.ts` 和 `src/i18n/zh-hk.ts`
 
