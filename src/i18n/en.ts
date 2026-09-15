@@ -47,6 +47,12 @@ export const en = {
   // Project cards live in src/data/projects.ts.
   // Writing entries live in src/data/writing.ts.
 
+  // Post page chrome — the article itself lives in
+  // src/pages/writing/ (and its zh-hk twin).
+  post: {
+    backToWriting: 'back to writing',
+  },
+
   photography: {
     listLabel: 'Photos',
     frames: ['unexposed', 'developing', 'light leak', 'not yet shot'],

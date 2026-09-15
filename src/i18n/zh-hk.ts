@@ -51,6 +51,11 @@ export const zhHK: UIStrings = {
   // 項目卡片喺 src/data/projects.ts。
   // 文章條目喺 src/data/writing.ts。
 
+  // 文章頁框架——正文喺 src/pages/writing/（同佢嘅 zh-hk 孿生）。
+  post: {
+    backToWriting: '返去文章',
+  },
+
   photography: {
     listLabel: '照片',
     frames: ['未曝光', '沖晒中', '漏光', '未影'],

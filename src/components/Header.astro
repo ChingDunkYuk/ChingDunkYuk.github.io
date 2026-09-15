@@ -5,10 +5,25 @@ import { navItems } from '../data/navigation';
 
 interface Props {
   locale: Locale;
+  /**
+   * Language-switch targets per locale. Defaults to the locale
+   * roots (homepage); article pages pass their own twin URLs so
+   * the switch stays on the article in the other language.
+   */
+  langHrefs?: Record<Locale, string>;
 }
 
-const { locale } = Astro.props;
+const { locale, langHrefs } = Astro.props;
 const t = getDict(locale);
+const hrefs: Record<Locale, string> = langHrefs ?? localeBase;
+
+// Section anchors only exist on the homepage; everywhere else the
+// nav icons hop home first, then down. (Trailing-slash-proofed —
+// dev and build both serve "/writing/" but be safe on both.)
+const isHome =
+  Astro.url.pathname.replace(/\/+$/, '') === localeBase[locale].replace(/\/+$/, '');
+const navHref = (id: string) =>
+  isHome ? `#${id}` : `${localeBase[locale]}#${id}`;
 ---
 
 <header class="site-header">
@@ -39,7 +54,7 @@ const t = getDict(locale);
       <nav class="site-nav mono" aria-label={t.header.navLabel}>
         {
           navItems.map((item) => (
-            <a class="nav-link" href={`#${item.id}`} data-icon={item.id} aria-label={item.label[locale]}>
+            <a class="nav-link" href={navHref(item.id)} data-icon={item.id} aria-label={item.label[locale]}>
               <svg class="nav-icon" viewBox="0 -960 960 960" aria-hidden="true" focusable="false">
                 <path d={item.icon} />
               </svg>
@@ -75,11 +90,11 @@ const t = getDict(locale);
       </button>
 
       <nav class="lang-switch mono" aria-label={t.header.langLabel}>
-        <a href={localeBase.en} data-lang-switch aria-current={locale === 'en' ? 'true' : undefined}>
+        <a href={hrefs.en} data-lang-switch aria-current={locale === 'en' ? 'true' : undefined}>
           {t.header.langEn}
         </a>
         <span class="sep" aria-hidden="true">/</span>
-        <a href={localeBase['zh-hk']} data-lang-switch aria-current={locale === 'zh-hk' ? 'true' : undefined}>
+        <a href={hrefs['zh-hk']} data-lang-switch aria-current={locale === 'zh-hk' ? 'true' : undefined}>
           {t.header.langZh}
         </a>
       </nav>

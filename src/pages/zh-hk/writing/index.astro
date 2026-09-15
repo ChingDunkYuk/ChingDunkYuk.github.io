@@ -1,0 +1,43 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import Post from '../../../components/Post.astro';
+
+const title = '砌咗個自己嘅互聯網角落';
+---
+
+<BaseLayout
+  locale="zh-hk"
+  path="/writing/"
+  title={`${title} — Tung Yuk`}
+  description="突然間整咗兩三個小項目，又突然間想整個個人網站，所以就有咗呢度。"
+>
+  <Post locale="zh-hk" title={title} date="2026-09">
+    <p>突然間整咗兩三個小項目，又突然間想整個個人網站，所以就有咗呢度。</p>
+
+    <p>其實一開始冇乜完整規劃。東又砌啲，西又砌啲，今日加個 Project，聽日擺幾張相，再過兩日又覺得不如加個 Now。最尾一路砌、一路改，就變成而家見到嘅樣。</p>
+
+    <p>平時做過嘅嘢其實幾散：有啲喺 GitHub，有啲喺相簿，有啲只係腦入面突然閃過嘅念頭。與其由得佢哋四散，不如整個地方收埋一齊。</p>
+
+    <p>所以呢度唔算係履歷，亦唔係一個好正經嘅作品集。</p>
+
+    <p>Projects 放我收工之後整嘅小玩具；Photography 放一啲自己鍾意嘅相；Now 記低最近又搞緊啲乜；Writing 就留俾一啲突然想寫低嘅嘢。</p>
+
+    <p>而呢個網站本身，其實都係其中一個 side project。</p>
+
+    <p>由一個空白頁開始，慢慢加咗英繁雙語、菲林元素、Logo、GitHub 自動部署，再一路執到而家。</p>
+
+    <h2>有咩用？</h2>
+
+    <p>大概就係下次有人問我：</p>
+
+    <blockquote>
+      <p>「你平時到底搞緊啲乜？」</p>
+    </blockquote>
+
+    <p>我可以直接丟呢個網址俾佢。</p>
+
+    <p>至於之後會變成點，暫時未諗。</p>
+
+    <p class="closing">有得搞，就繼續搞。</p>
+  </Post>
+</BaseLayout>

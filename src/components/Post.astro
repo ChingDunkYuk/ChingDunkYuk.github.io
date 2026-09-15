@@ -1,0 +1,138 @@
+---
+import { getDict, localizePath, type Locale } from '../i18n/config';
+
+interface Props {
+  locale: Locale;
+  /** the article title */
+  title: string;
+  /** display stamp, e.g. '2026-09' */
+  date: string;
+}
+
+const { locale, title, date } = Astro.props;
+const t = getDict(locale);
+
+// CJK glyphs do not italicize — quoted passages and the closing
+// line stay upright in Chinese (same call as the hero quote).
+const upright = locale !== 'en';
+---
+
+<article class:list={['post', { upright }]}>
+  <header class="post-head">
+    <p class="prompt mono">$ cat post.md</p>
+    <h1>{title}</h1>
+    <p class="date mono">{date}</p>
+  </header>
+
+  <div class="post-body">
+    <slot />
+  </div>
+
+  <footer class="post-foot">
+    <a class="back-link mono" href={`${localizePath('/', locale)}#writing`}>
+      <span aria-hidden="true">&larr;</span> {t.post.backToWriting}
+    </a>
+  </footer>
+</article>
+
+<style>
+  /* ---------- post page (42rem reading column) ---------- */
+  .post {
+    max-width: 42rem;
+    margin-inline: auto;
+    padding-block: var(--space-7) var(--space-8);
+  }
+
+  .post-head {
+    margin-bottom: var(--space-6);
+  }
+
+  .prompt {
+    color: var(--accent);
+    font-size: var(--text-sm);
+    margin-bottom: var(--space-4);
+  }
+
+  .post-head h1 {
+    font-family: var(--font-serif);
+    font-size: clamp(1.875rem, 1.5rem + 1.5vw, 2.5rem);
+    font-weight: 700;
+    line-height: 1.15;
+    letter-spacing: -0.015em;
+    margin-bottom: var(--space-4);
+  }
+
+  .date {
+    color: var(--ink-faint);
+    font-size: var(--text-sm);
+  }
+
+  /* the reading surface — serif for the long run, 18px with a
+     generous 1.85 line height so the paragraphs breathe.
+     Slot content (the article markup written in the page files)
+     carries the page's scope id, not this component's — hence
+     :global() on every descendant selector below. */
+  .post-body :global(p) {
+    font-family: var(--font-serif);
+    font-size: var(--text-md);
+    line-height: 1.85;
+    margin-top: var(--space-4);
+  }
+
+  .post-body > :global(p:first-child) {
+    margin-top: 0;
+  }
+
+  /* the mid-article question — bigger serif, extra air above */
+  .post-body :global(h2) {
+    font-family: var(--font-serif);
+    font-size: var(--text-lg);
+    font-weight: 600;
+    margin-top: var(--space-7);
+    margin-bottom: var(--space-4);
+  }
+
+  /* the spoken line — a strip of amber film edge beside it */
+  .post-body :global(blockquote) {
+    margin-top: var(--space-4);
+    padding-left: var(--space-4);
+    border-left: 2px solid var(--accent);
+  }
+
+  .post-body :global(blockquote p) {
+    font-style: italic;
+    margin-top: 0;
+  }
+
+  .upright .post-body :global(blockquote p) {
+    font-style: normal;
+  }
+
+  /* the sign-off — the one line allowed to glow amber */
+  .post-body :global(.closing) {
+    color: var(--accent);
+    font-style: italic;
+  }
+
+  .upright .post-body :global(.closing) {
+    font-style: normal;
+  }
+
+  .post-foot {
+    margin-top: var(--space-7);
+    padding-top: var(--space-5);
+    border-top: var(--border);
+  }
+
+  .back-link {
+    font-size: var(--text-xs);
+    color: var(--ink-faint);
+    text-decoration: none;
+    letter-spacing: 0.04em;
+  }
+
+  .back-link:hover,
+  .back-link:focus-visible {
+    color: var(--accent);
+  }
+</style>

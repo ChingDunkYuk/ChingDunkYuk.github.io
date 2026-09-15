@@ -1,5 +1,5 @@
 ---
-import { getDict, type Locale } from '../i18n/config';
+import { getDict, localizePath, type Locale } from '../i18n/config';
 import { writing } from '../data/writing';
 
 interface Props {
@@ -20,22 +20,44 @@ const t = getDict(locale);
 
     <ul class="post-list" role="list">
       {
-        writing.map((post) => (
-          <li class="post" role="listitem">
-            <time class="mono">{post.time[locale]}</time>
-            <div class="post-body">
-              <h3>{post.title[locale]}</h3>
-              <p>{post.excerpt[locale]}</p>
-            </div>
-          </li>
-        ))
+        writing.map((post) => {
+          // canonical href → this locale's path; rows without one
+          // are drafts and stay inert
+          const href = post.href ? localizePath(post.href, locale) : undefined;
+          const row = (
+            <>
+              <time class="mono">{post.time[locale]}</time>
+              <div class="post-body">
+                <h3>
+                  {post.title[locale]}
+                  {href && (
+                    <span class="arrow mono" aria-hidden="true">
+                      {' '}
+                      &rarr;
+                    </span>
+                  )}
+                </h3>
+                <p>{post.excerpt[locale]}</p>
+              </div>
+            </>
+          );
+          return (
+            <li class="post" role="listitem">
+              {href ? (
+                <a class="row" href={href}>{row}</a>
+              ) : (
+                <div class="row">{row}</div>
+              )}
+            </li>
+          );
+        })
       }
     </ul>
   </div>
 </section>
 
 <style>
-  /* ---------- writing (plain post list) ---------- */
+  /* ---------- writing (post list — published rows are links) ---------- */
   .post-list {
     list-style: none;
     margin: 0;
@@ -44,9 +66,6 @@ const t = getDict(locale);
   }
 
   .post {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: var(--space-1);
     padding-block: var(--space-4);
   }
 
@@ -55,27 +74,56 @@ const t = getDict(locale);
     padding-block: var(--space-5);
   }
 
+  .row {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-1);
+  }
+
+  a.row {
+    text-decoration: none;
+    color: inherit;
+  }
+
   @media (min-width: 40rem) {
-    .post {
+    .row {
       grid-template-columns: 7rem 1fr;
       gap: var(--space-4);
-      padding-block: var(--space-5);
     }
   }
 
-  .post time {
+  .row time {
     color: var(--ink-faint);
     font-size: var(--text-sm);
     padding-top: 2px;
   }
 
-  .post h3 {
+  .row h3 {
     font-size: var(--text-md);
     font-weight: 600;
     letter-spacing: -0.01em;
+    transition: color 0.2s var(--ease);
   }
 
-  .post p {
+  /* the film-advance arrow fades in on hover — opacity only, so
+     reduced-motion users simply get it instantly */
+  .arrow {
+    color: var(--accent);
+    opacity: 0;
+    transition: opacity 0.2s var(--ease);
+  }
+
+  a.row:hover h3,
+  a.row:focus-visible h3 {
+    color: var(--accent);
+  }
+
+  a.row:hover .arrow,
+  a.row:focus-visible .arrow {
+    opacity: 1;
+  }
+
+  .row p {
     margin-top: var(--space-1);
     color: var(--ink-soft);
     font-size: var(--text-sm);

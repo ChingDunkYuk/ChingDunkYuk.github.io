@@ -1,7 +1,13 @@
 ---
 import '../styles/global.css';
 import { getImage } from 'astro:assets';
-import { getDict, htmlLang, localeBase, type Locale } from '../i18n/config';
+import {
+  getDict,
+  htmlLang,
+  localizePath,
+  localeBase,
+  type Locale,
+} from '../i18n/config';
 import { site } from '../config/site';
 import { ambientCommands } from '../data/ambient';
 import Header from '../components/Header.astro';
@@ -12,22 +18,35 @@ interface Props {
   locale: Locale;
   title?: string;
   description?: string;
+  /**
+   * Canonical path of THIS page, written locale-free with a
+   * leading slash (e.g. '/writing/'). Defaults to the homepage.
+   * Drives canonical/hreflang/OG URLs and the language switch.
+   */
+  path?: string;
 }
 
-const { locale, title, description } = Astro.props;
+const { locale, title, description, path: pagePath = '/' } = Astro.props;
 const t = getDict(locale);
 
 // Absolute URLs for canonical / hreflang / OG. `site` is set in
 // astro.config.ts; the fallback only keeps the type checker happy.
 const siteUrl = Astro.site ?? new URL(site.siteUrl);
-const canonicalURL = new URL(localeBase[locale], siteUrl).href;
+const canonicalURL = new URL(localizePath(pagePath, locale), siteUrl).href;
 
 // Full reciprocal set on every page — self + the other locale
 // (x-default added in <head>) so Google's cross-linking rule holds.
 const alternates = (Object.keys(localeBase) as Locale[]).map((l) => ({
   hreflang: htmlLang[l],
-  href: new URL(localeBase[l], siteUrl).href,
+  href: new URL(localizePath(pagePath, l), siteUrl).href,
 }));
+
+// Language-switch targets: the locale roots on the homepage, this
+// same page in the other language everywhere else.
+const langHrefs: Record<Locale, string> = {
+  en: localizePath(pagePath, 'en'),
+  'zh-hk': localizePath(pagePath, 'zh-hk'),
+};
 
 // Social card image — a build-time 1200×630 crop; it never enters
 // the page DOM, the visible photos are untouched.
@@ -119,7 +138,7 @@ const ogImageURL = new URL(ogImage.src, siteUrl).href;
       {Array.from({ length: 10 }, () => 'by klaus & Sora \u25B8 ').join('')}
     </div>
 
-    <Header locale={locale} />
+    <Header locale={locale} langHrefs={langHrefs} />
 
     <main>
       <slot />
@@ -160,43 +179,49 @@ const ogImageURL = new URL(ogImage.src, siteUrl).href;
         });
       };
 
-      let current = location.hash;
-      setHref(current);
-
       const sections = Array.from(
         document.querySelectorAll<HTMLElement>('main section[id]')
       );
 
-      let tracking = false;
-      const track = () => {
-        tracking = false;
-        const line = window.innerHeight * 0.4;
-        let next = '';
-        for (const section of sections) {
-          if (section.getBoundingClientRect().top <= line) next = `#${section.id}`;
-          else break;
-        }
-        if (next !== current) {
-          current = next;
-          setHref(next);
-        }
-      };
-      const requestTrack = () => {
-        if (!tracking) {
-          tracking = true;
-          requestAnimationFrame(track);
-        }
-      };
-
-      // a nav click scrolls to a section — honour it, then the
-      // scroll tracker takes over again on the next scroll
-      window.addEventListener('hashchange', () => {
-        current = location.hash;
+      // The scroll tracker only makes sense where sections exist —
+      // the homepage. On article pages the switch links are already
+      // rendered statically (pointing at the same article in the
+      // other locale) and must stay untouched.
+      if (sections.length > 0) {
+        let current = location.hash;
         setHref(current);
-      });
-      window.addEventListener('scroll', requestTrack, { passive: true });
-      window.addEventListener('resize', requestTrack);
-      track();
+
+        let tracking = false;
+        const track = () => {
+          tracking = false;
+          const line = window.innerHeight * 0.4;
+          let next = '';
+          for (const section of sections) {
+            if (section.getBoundingClientRect().top <= line) next = `#${section.id}`;
+            else break;
+          }
+          if (next !== current) {
+            current = next;
+            setHref(next);
+          }
+        };
+        const requestTrack = () => {
+          if (!tracking) {
+            tracking = true;
+            requestAnimationFrame(track);
+          }
+        };
+
+        // a nav click scrolls to a section — honour it, then the
+        // scroll tracker takes over again on the next scroll
+        window.addEventListener('hashchange', () => {
+          current = location.hash;
+          setHref(current);
+        });
+        window.addEventListener('scroll', requestTrack, { passive: true });
+        window.addEventListener('resize', requestTrack);
+        track();
+      }
 
       // Viewfinder readout: fade in past the first screen and
       // tick the frame counter with scroll progress (01–36 =

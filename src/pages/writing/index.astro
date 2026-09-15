@@ -1,0 +1,49 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Post from '../../components/Post.astro';
+
+const title = 'Building My Own Little Corner of the Internet';
+---
+
+<BaseLayout
+  locale="en"
+  path="/writing/"
+  title={`${title} — Tung Yuk`}
+  description="I suddenly ended up building two or three small projects, then just as suddenly thought, “Why not make a personal website?” So this happened."
+>
+  <Post locale="en" title={title} date="2026-09">
+    <p>I suddenly ended up building two or three small projects, then just as suddenly thought, “Why not make a personal website?”</p>
+
+    <p>So this happened.</p>
+
+    <p>There was never much of a master plan. I built a bit here, added something there, threw in a Projects section, added some photos, then decided a Now page might be fun too. Eventually, after enough small changes, it turned into the site you&rsquo;re looking at now.</p>
+
+    <p>Most of the things I make tend to live in different places: some on GitHub, some in my photo library, and some as random ideas that appear for a while and disappear again.</p>
+
+    <p>So I wanted one place to keep them together.</p>
+
+    <p>This isn&rsquo;t really a r&eacute;sum&eacute;, and it isn&rsquo;t meant to be a serious portfolio either.</p>
+
+    <p>Projects is where the little things I build after work end up. Photography is for photos I actually like. Now is a snapshot of whatever I&rsquo;m messing with lately. Writing is for anything that feels worth putting into words.</p>
+
+    <p>And the website itself is just another side project.</p>
+
+    <p>It started as an empty page, then slowly picked up bilingual support, film-inspired details, a personal logo, automatic GitHub deployment, and whatever else seemed fun at the time.</p>
+
+    <h2>What&rsquo;s it actually useful for?</h2>
+
+    <p>Probably this:</p>
+
+    <p>The next time someone asks,</p>
+
+    <blockquote>
+      <p>&ldquo;What do you actually spend your time building?&rdquo;</p>
+    </blockquote>
+
+    <p>I can just send them this link.</p>
+
+    <p>As for what this site will eventually become, I have no idea yet.</p>
+
+    <p class="closing">If there&rsquo;s something worth tinkering with, I&rsquo;ll keep tinkering.</p>
+  </Post>
+</BaseLayout>
