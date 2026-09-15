@@ -16,18 +16,6 @@ const upright = locale !== 'en';
 
 <!-- ============ hero ============ -->
 <section class="hero" aria-label={t.hero.region}>
-  {/* the personal mark, blown up into a ghost watermark on the
-      darkroom wall — desktop/tablet only; phones keep it clean */}
-  <img
-    class="watermark"
-    src={site.logo.default}
-    alt=""
-    width="725"
-    height="834"
-    decoding="async"
-    aria-hidden="true"
-  />
-
   <div class="container">
     <p class="prompt mono">{t.hero.prompt}</p>
     <h1>{site.name}</h1>
@@ -41,24 +29,36 @@ const upright = locale !== 'en';
 </section>
 
 <style>
-  /* ---------- hero (~65vh — Now peeks in at the fold) ---------- */
+  /* ---------- hero (~62vh — the editorial spread) ----------
+     Not a landing-page banner. The block shares the left axis
+     with every section below (the .container rules them all),
+     hangs a touch above the middle, and simply leaves the right
+     half empty — negative space is the layout, not a gap to
+     fill. */
   .hero {
-    position: relative; /* anchor for the ghost mark */
-    overflow: hidden; /* clips its right bleed, no page scrollbar */
-    min-height: calc(65vh - var(--header-h));
-    min-height: calc(65svh - var(--header-h));
+    min-height: calc(62vh - var(--header-h));
+    min-height: calc(62svh - var(--header-h));
+    /* column, not row: in a row flex the .container would shrink to
+       fit-content and its margin-inline auto would centre the block
+       mid-viewport — a landing-page look. Column + stretch keeps the
+       container block-level (max-width, auto margins), so the type
+       sits on the same left axis as every section below. */
     display: flex;
-    align-items: center;
-    /* bias the block upward — extra bottom padding lifts the
-       optical centre, so the hero sits slightly high instead of
-       dead-centre, and the fold belongs to Now */
-    padding-block: var(--space-7) calc(var(--space-6) + 10vh);
+    flex-direction: column;
+    justify-content: center;
+    /* slight upward bias — the fold below belongs to Now */
+    padding-block: var(--space-7) calc(var(--space-6) + 6vh);
   }
 
-  /* the type always sits above the ghost mark */
+  /* keep the hero block on the section grid below:
+     a flex item's auto width collapses to fit-content, and its
+     auto margins then centre that shrunken block mid-viewport
+     (the landing-page look). An explicit width restores the
+     block-level footprint: stretch to the section, clamp at
+     64rem, auto margins centre the column — same left edge as
+     every section below. */
   .hero .container {
-    position: relative;
-    z-index: 1;
+    width: 100%;
   }
 
   .prompt {
@@ -120,35 +120,6 @@ const upright = locale !== 'en';
   @keyframes blink {
     50% {
       opacity: 0;
-    }
-  }
-
-  /* ---------- the ghost mark ----------
-     The logo blown up on the darkroom wall — faint enough to
-     never fight the type, bleeding off the right edge like a
-     frame crop. Phones keep the hero clean. */
-  .watermark {
-    position: absolute;
-    top: 50%;
-    right: clamp(-9rem, -8vw, -2rem);
-    transform: translateY(-50%);
-    height: min(38rem, 52vh);
-    width: auto;
-    opacity: 0.035;
-    pointer-events: none;
-    user-select: none;
-  }
-
-  /* paper stock — cream would vanish on cream, so the mark is
-     re-inked warm-black (same trick as the header logo) */
-  html[data-theme='light'] .watermark {
-    filter: brightness(0.16) saturate(0.8);
-    opacity: 0.04;
-  }
-
-  @media (max-width: 40rem) {
-    .watermark {
-      display: none;
     }
   }
 
