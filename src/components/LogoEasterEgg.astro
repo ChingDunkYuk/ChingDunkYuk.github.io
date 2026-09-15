@@ -1,0 +1,181 @@
+---
+/**
+ * LogoEasterEgg — the hidden five-tap salute.
+ *
+ * Five clicks on the header wordmark (each within ~2s of the
+ * previous) summons a one-line toast from the terminal. Fully
+ * self-contained: the toast markup + styles + behaviour live
+ * here; Header knows nothing about it. No storage, no state
+ * beyond a click counter that resets on a slow tap or a fire.
+ *
+ * One deliberate nuance: the wordmark is a real link, and a
+ * same-page link click would reload the page — wiping the count
+ * before five taps can land. So same-page clicks are taken over
+ * as an in-place hop-to-top (the net effect a reload had anyway),
+ * while cross-page clicks (article → home) fall through to the
+ * browser untouched. The navigation the wordmark promises is
+ * never broken.
+ */
+---
+
+{/* the toast — fixed & pointer-transparent, so it can never
+    shift the page layout; it simply floats above the fold */}
+<div class="egg-toast mono" data-egg-toast role="status">
+  {/* screen readers get the whole line in one shot — the
+      typewriter below is pure eye-candy and hidden from AT */}
+  <span class="sr-only" data-egg-sr></span>
+  <span class="egg-line" aria-hidden="true">
+    <span class="egg-prompt">$</span>
+    <span data-egg-text></span><span class="egg-caret"></span>
+  </span>
+</div>
+
+<style>
+  .egg-toast {
+    position: fixed;
+    bottom: 2.25rem;
+    left: 50%;
+    z-index: 70; /* above the header (60), under the grain (999) */
+    padding: var(--space-3) var(--space-5);
+    background: var(--surface-dim);
+    color: var(--ink-soft);
+    border: var(--border);
+    border-radius: var(--radius);
+    font-size: var(--text-sm);
+    letter-spacing: 0.02em;
+    white-space: nowrap;
+    pointer-events: none;
+    opacity: 0;
+    transform: translate(-50%, 0.5rem);
+    transition:
+      opacity 0.3s var(--ease),
+      transform 0.3s var(--ease);
+  }
+
+  .egg-toast.is-visible {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+
+  .egg-prompt {
+    color: var(--accent);
+    margin-right: var(--space-2);
+  }
+
+  /* terminal caret — the same blink the hero cursor and the
+     wordmark use */
+  .egg-caret {
+    display: inline-block;
+    width: 0.55em;
+    height: 1.05em;
+    margin-left: 0.15em;
+    vertical-align: text-bottom;
+    background: var(--ink-faint);
+    animation: egg-blink 1.2s steps(1) infinite;
+  }
+
+  @keyframes egg-blink {
+    50% {
+      opacity: 0;
+    }
+  }
+
+  /* reduced motion: the global clamp collapses the transition and
+     the caret blink to a standstill, so the toast just appears —
+     and the typing is skipped in the script below */
+
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+    border: 0;
+  }
+</style>
+
+<script>
+  // the payload — one line, hidden until five taps say otherwise
+  const MESSAGE = '仲唔諗下今晚食咩？——晴';
+
+  const REQUIRED = 5; // taps to fire
+  const GAP_MS = 2000; // taps further apart than this reset the run
+  const HOLD_MS = 4500; // how long the line stays on screen
+  const TYPE_MS = 70; // per-glyph typewriter cadence
+
+  const toast = document.querySelector<HTMLElement>('[data-egg-toast]');
+  const textEl = document.querySelector<HTMLElement>('[data-egg-text]');
+  const srEl = document.querySelector<HTMLElement>('[data-egg-sr]');
+
+  if (toast && textEl && srEl) {
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+    let count = 0;
+    let lastTap = 0;
+    let typeTimer: number | undefined;
+    let hideTimer: number | undefined;
+
+    const fire = () => {
+      window.clearTimeout(typeTimer);
+      window.clearTimeout(hideTimer);
+
+      // reset before re-announcing so repeated fires re-read
+      // (a live region only speaks on change)
+      srEl.textContent = '';
+      window.setTimeout(() => {
+        srEl.textContent = MESSAGE;
+      }, 0);
+
+      textEl.textContent = '';
+      toast.classList.add('is-visible');
+
+      if (reduced.matches) {
+        // motion off → the whole line, no typewriter
+        textEl.textContent = MESSAGE;
+      } else {
+        let i = 0;
+        const step = () => {
+          i += 1;
+          textEl.textContent = MESSAGE.slice(0, i);
+          if (i < MESSAGE.length) typeTimer = window.setTimeout(step, TYPE_MS);
+        };
+        typeTimer = window.setTimeout(step, TYPE_MS);
+      }
+
+      hideTimer = window.setTimeout(() => {
+        toast.classList.remove('is-visible');
+      }, HOLD_MS);
+    };
+
+    // document-level delegation — Header stays untouched
+    document.addEventListener('click', (e) => {
+      const target = e.target as HTMLElement | null;
+      const logo = target?.closest?.('a.wordmark');
+      if (!(logo instanceof HTMLAnchorElement)) return;
+
+      // same-page logo click → would only reload the page (and
+      // wipe the count); take it over as an in-place hop-to-top,
+      // which is the net effect that reload had anyway.
+      // cross-page clicks keep their native navigation.
+      const href = new URL(logo.href, location.href);
+      const samePage =
+        href.pathname.replace(/\/+$/, '') === location.pathname.replace(/\/+$/, '');
+      if (!samePage) return;
+      e.preventDefault();
+      window.scrollTo({ top: 0 });
+
+      const now = Date.now();
+      if (now - lastTap > GAP_MS) count = 0;
+      lastTap = now;
+      count += 1;
+
+      if (count >= REQUIRED) {
+        count = 0; // the run is spent — the next 5-tap run starts from zero
+        fire();
+      }
+    });
+  }
+</script>

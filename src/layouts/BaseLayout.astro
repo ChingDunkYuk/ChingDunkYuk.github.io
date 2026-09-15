@@ -12,6 +12,7 @@ import { site } from '../config/site';
 import { ambientCommands } from '../data/ambient';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
+import LogoEasterEgg from '../components/LogoEasterEgg.astro';
 import ogSrc from '../assets/photos/workshop-light.jpg';
 
 interface Props {
@@ -145,6 +146,10 @@ const ogImageURL = new URL(ogImage.src, siteUrl).href;
     </main>
 
     <Footer locale={locale} />
+
+    {/* hidden five-tap toast on the wordmark — self-contained,
+        zero layout impact */}
+    <LogoEasterEgg />
 
     {/* viewfinder readout — the exposure counter in the corner
         of a camera viewfinder: a single amber line of mono
