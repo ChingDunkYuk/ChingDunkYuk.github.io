@@ -16,6 +16,18 @@ const upright = locale !== 'en';
 
 <!-- ============ hero ============ -->
 <section class="hero" aria-label={t.hero.region}>
+  {/* the personal mark, blown up into a ghost watermark on the
+      darkroom wall — desktop/tablet only; phones keep it clean */}
+  <img
+    class="watermark"
+    src={site.logo.default}
+    alt=""
+    width="725"
+    height="834"
+    decoding="async"
+    aria-hidden="true"
+  />
+
   <div class="container">
     <p class="prompt mono">{t.hero.prompt}</p>
     <h1>{site.name}</h1>
@@ -25,21 +37,28 @@ const upright = locale !== 'en';
     <p class="quote-note mono">
       {t.hero.note}<span class="cursor" aria-hidden="true"></span>
     </p>
-
-    <a class="scroll-hint mono" href="#now">
-      <span aria-hidden="true">&darr;</span> {t.hero.scroll}
-    </a>
   </div>
 </section>
 
 <style>
-  /* ---------- hero (~80vh, next section peeks below) ---------- */
+  /* ---------- hero (~65vh — Now peeks in at the fold) ---------- */
   .hero {
-    min-height: calc(80vh - var(--header-h));
-    min-height: calc(80svh - var(--header-h));
+    position: relative; /* anchor for the ghost mark */
+    overflow: hidden; /* clips its right bleed, no page scrollbar */
+    min-height: calc(65vh - var(--header-h));
+    min-height: calc(65svh - var(--header-h));
     display: flex;
     align-items: center;
-    padding-block: var(--space-7) var(--space-6);
+    /* bias the block upward — extra bottom padding lifts the
+       optical centre, so the hero sits slightly high instead of
+       dead-centre, and the fold belongs to Now */
+    padding-block: var(--space-7) calc(var(--space-6) + 10vh);
+  }
+
+  /* the type always sits above the ghost mark */
+  .hero .container {
+    position: relative;
+    z-index: 1;
   }
 
   .prompt {
@@ -56,6 +75,14 @@ const upright = locale !== 'en';
     margin-bottom: var(--space-4);
   }
 
+  /* wide screens: the name carries the frame — ~12% larger.
+     Phones keep the token size. */
+  @media (min-width: 40rem) {
+    .hero h1 {
+      font-size: calc(var(--text-hero) * 1.12);
+    }
+  }
+
   .role {
     color: var(--ink-soft);
     font-size: var(--text-md);
@@ -67,7 +94,7 @@ const upright = locale !== 'en';
     font-style: italic;
     font-size: clamp(1.25rem, 1rem + 1vw, 1.625rem);
     line-height: 1.5;
-    max-width: 34ch;
+    max-width: 38ch;
     margin-bottom: var(--space-4);
   }
 
@@ -96,17 +123,33 @@ const upright = locale !== 'en';
     }
   }
 
-  .scroll-hint {
-    display: inline-block;
-    margin-top: var(--space-6);
-    font-size: var(--text-xs);
-    color: var(--ink-faint);
-    text-decoration: none;
-    letter-spacing: 0.04em;
+  /* ---------- the ghost mark ----------
+     The logo blown up on the darkroom wall — faint enough to
+     never fight the type, bleeding off the right edge like a
+     frame crop. Phones keep the hero clean. */
+  .watermark {
+    position: absolute;
+    top: 50%;
+    right: clamp(-9rem, -8vw, -2rem);
+    transform: translateY(-50%);
+    height: min(38rem, 52vh);
+    width: auto;
+    opacity: 0.035;
+    pointer-events: none;
+    user-select: none;
   }
 
-  .scroll-hint:hover {
-    color: var(--accent);
+  /* paper stock — cream would vanish on cream, so the mark is
+     re-inked warm-black (same trick as the header logo) */
+  html[data-theme='light'] .watermark {
+    filter: brightness(0.16) saturate(0.8);
+    opacity: 0.04;
+  }
+
+  @media (max-width: 40rem) {
+    .watermark {
+      display: none;
+    }
   }
 
   /* ---------- small screens ---------- */
@@ -114,10 +157,6 @@ const upright = locale !== 'en';
     /* keep the role line on one line */
     .role {
       font-size: var(--text-base);
-    }
-
-    .scroll-hint {
-      margin-top: var(--space-5);
     }
   }
 </style>

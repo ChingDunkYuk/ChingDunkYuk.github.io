@@ -25,7 +25,6 @@ export const en = {
     role: 'IT Ops / Builder / Photographer',
     quote: '“Keeping systems alive at work, building unnecessary things after work.”',
     note: '# side projects > side quests.',
-    scroll: 'scroll',
   },
 
   sections: {

@@ -30,7 +30,6 @@ export const zhHK: UIStrings = {
     role: 'IT Ops / Builder / Photographer',
     quote: '「日間保住系統一命，放工就砌啲無謂嘢。」',
     note: '# side projects > side quests.',
-    scroll: '向下捲動',
   },
 
   sections: {
