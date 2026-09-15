@@ -1,7 +1,7 @@
 import type { Project } from '../types';
 
 /**
- * Selected projects — one entry per card in the projects section.
+ * Projects — one entry per card in the projects section.
  * Add a project by appending an object here; the section component
  * reads this list, no template edits needed.
  *

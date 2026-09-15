@@ -30,7 +30,7 @@ export const en = {
 
   sections: {
     now: 'Now',
-    projects: 'Selected Projects',
+    projects: 'Projects',
     photography: 'Photography',
     writing: 'Writing',
     about: 'About',

@@ -35,7 +35,7 @@ export const zhHK: UIStrings = {
 
   sections: {
     now: '而家搞緊',
-    projects: '精選項目',
+    projects: '項目',
     photography: '攝影',
     writing: '文章',
     about: '關於',
