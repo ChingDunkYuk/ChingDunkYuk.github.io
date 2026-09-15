@@ -17,7 +17,7 @@ import argparse
 import sys
 from pathlib import Path
 
-from PIL import Image, ImageDraw, ImageFont
+from PIL import Image, ImageDraw, ImageFont, ImageOps
 
 ROOT = Path(__file__).resolve().parents[1]
 SRC_DIR = ROOT / "src" / "assets" / "photos" / "original"
@@ -44,7 +44,12 @@ def load_font(size: int) -> ImageFont.FreeTypeFont:
 
 
 def watermark(src: Path, text: str) -> Path:
-    img = Image.open(src).convert("RGB")
+    img = Image.open(src)
+    # honour the EXIF orientation tag (if any) before baking the
+    # mark — otherwise a phone photo shot in portrait keeps its
+    # tag through PIL but the saved copy drops it, and the mark
+    # lands sideways. No-op for photos without the tag.
+    img = ImageOps.exif_transpose(img).convert("RGB")
     w, h = img.size
     draw = ImageDraw.Draw(img, "RGBA")
 

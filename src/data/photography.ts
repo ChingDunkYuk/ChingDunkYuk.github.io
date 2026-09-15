@@ -16,6 +16,12 @@ import type { Photo } from '../types';
  * contact sheet; everything else is reserved for the future
  * photography page (title / location / year feed that page).
  *
+ * `slot` only sets the column span on the desktop contact sheet
+ * (6-column grid): ph-a = 2 cols (tall strips), ph-b = 4 cols
+ * (wide), ph-c / ph-d = 3 cols (half). Keep each row's spans
+ * summing to 6 so the sheet leaves no holes; photos keep their
+ * own aspect ratio, so pair heights by matching span ÷ ratio.
+ *
  * import mongkok from '../assets/photos/mongkok-night.jpg';
  *
  * {
@@ -26,8 +32,17 @@ import type { Photo } from '../types';
  *   featured: true,
  * },
  */
+import alleyGap from '../assets/photos/alley-gap.jpg';
 import alleyRoots from '../assets/photos/alley-roots.jpg';
+import barkLight from '../assets/photos/bark-light.jpg';
+import deliveryLane from '../assets/photos/delivery-lane.jpg';
+import doorwayUncle from '../assets/photos/doorway-uncle.jpg';
+import kengkouStation from '../assets/photos/kengkou-station.jpg';
 import pavementRoots from '../assets/photos/pavement-roots.jpg';
+import railFence from '../assets/photos/rail-fence.jpg';
+import streetSunset from '../assets/photos/street-sunset.jpg';
+import treeStreet from '../assets/photos/tree-street.jpg';
+import windowSunset from '../assets/photos/window-sunset.jpg';
 import workshopLight from '../assets/photos/workshop-light.jpg';
 
 export const photography: Photo[] = [
@@ -59,6 +74,96 @@ export const photography: Photo[] = [
       'zh-hk': '工作台同木凳，俾一道道窗光切開',
     },
     caption: { en: 'workshop light', 'zh-hk': '工房窗光' },
+    featured: true,
+  },
+  {
+    src: windowSunset,
+    slot: 'ph-c',
+    alt: {
+      en: 'A sunset seen through a vehicle window, dark storm clouds above a glowing orange horizon',
+      'zh-hk': '隔住車窗望出去嘅日落，暗雲壓頂，地平線上剩返一道橙光',
+    },
+    caption: { en: 'sunset through the window', 'zh-hk': '車窗日落' },
+    featured: true,
+  },
+  {
+    src: barkLight,
+    slot: 'ph-b',
+    alt: {
+      en: 'Looking up a tree trunk, rough bark in shadow against sunlit green leaves',
+      'zh-hk': '仰視樹幹，粗糙嘅樹皮留喺暗處，綠葉俾陽光照到透光',
+    },
+    caption: { en: 'bark and leaves', 'zh-hk': '樹皮同綠葉' },
+    featured: true,
+  },
+  {
+    src: streetSunset,
+    slot: 'ph-a',
+    alt: {
+      en: 'A low orange sun at the end of a narrow street, pedestrians and parked scooters in golden-hour silhouette',
+      'zh-hk': '窄街盡頭一輪橙紅落日，行人同泊喺路邊嘅電單車喺逆光下變成剪影',
+    },
+    caption: { en: "sun at street's end", 'zh-hk': '街尾日落' },
+    featured: true,
+  },
+  {
+    src: alleyGap,
+    slot: 'ph-a',
+    alt: {
+      en: 'A sliver of street between two weathered residential buildings, overhead wires crossing the gap, in black and white',
+      'zh-hk': '黑白相：兩棟舊樓之間只剩一線窄巷，電線喺頭頂交錯',
+    },
+    caption: { en: 'between two walls', 'zh-hk': '兩牆之間' },
+    featured: true,
+  },
+  {
+    src: doorwayUncle,
+    slot: 'ph-a',
+    alt: {
+      en: 'An old man sits in his cluttered doorway, phone in one hand, putting his sandals back on, in black and white',
+      'zh-hk': '黑白相：阿伯坐喺堆滿雜物嘅門口，一手攞住手機，慢慢著返對拖鞋',
+    },
+    caption: { en: 'uncle at his door', 'zh-hk': '門口嘅阿伯' },
+    featured: true,
+  },
+  {
+    src: treeStreet,
+    slot: 'ph-a',
+    alt: {
+      en: 'A pedestrian crosses a street in dappled shade under a large tree beside old apartment blocks, in black and white',
+      'zh-hk': '黑白相：舊樓旁邊一棵大樹，一個路人喺樹蔭碎光之下過馬路',
+    },
+    caption: { en: 'crossing in tree shade', 'zh-hk': '樹蔭下過路' },
+    featured: true,
+  },
+  {
+    src: deliveryLane,
+    slot: 'ph-a',
+    alt: {
+      en: 'A food-delivery rider in yellow waits at the mouth of an old lane, tiled eaves and a vertical shop sign behind',
+      'zh-hk': '著住黃色衫嘅外賣仔停喺舊巷口，後面係瓦簷同一塊直書招牌',
+    },
+    caption: { en: 'rider at the lane mouth', 'zh-hk': '巷口外賣仔' },
+    featured: true,
+  },
+  {
+    src: kengkouStation,
+    slot: 'ph-a',
+    alt: {
+      en: 'From under an overpass by Kengkou station exit D, a bus pulls away past rows of parked scooters, in black and white',
+      'zh-hk': '黑白相：坑口站 D 出口天橋底望落去，一地電單車，一架巴士啱啱開走',
+    },
+    caption: { en: 'kengkou station, exit D', 'zh-hk': '坑口站 D 出口' },
+    featured: true,
+  },
+  {
+    src: railFence,
+    slot: 'ph-a',
+    alt: {
+      en: 'A train on converging tracks seen through a blurred chain-link fence, in black and white',
+      'zh-hk': '黑白相：隔住一層矇矓嘅鐵絲網，望住列車喺交匯嘅路軌上慢慢行過',
+    },
+    caption: { en: 'train behind the wire', 'zh-hk': '鐵網後嘅列車' },
     featured: true,
   },
 ];
