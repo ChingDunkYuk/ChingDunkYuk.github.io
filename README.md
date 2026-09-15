@@ -67,7 +67,11 @@ Astro 静态个人网站，双语（en / 繁中），部署在 GitHub Pages。
 2. 跑 `python scripts/watermark.py`——生成带「© by klaus」角标的水印图到 `src/assets/photos/`
 3. 在 `src/data/photography.ts` 导入并登记，`featured: true` 才会出现在首页
 
-`slot` 控制桌面端宽度档位：`ph-a` 窄 / `ph-b` 宽 / `ph-c`、`ph-d` 中。
+`slot` 控制桌面端宽度档位：`ph-a` 窄（2/6 列）/ `ph-b` 宽（4/6）/ `ph-c`、`ph-d` 中（3/6）。
+照片保留原始比例，网格行高由行内最高者决定且不会回填——所以**顺序即行**：排在
+一起的照片要「跨度 × (图高÷图宽)」两两接近，且每行跨度合计为 6，否则矮的下方会
+出现空洞。当前 12 张的行规划见 `photography.ts` 头部注释，插新照片时按同一规则
+找匹配行。
 `title` / `location` / `year` 是给将来的独立摄影页预留的，现在不渲染。
 
 **写文章 / 发新文章** → `src/pages/writing/` + `src/data/writing.ts`
