@@ -26,12 +26,15 @@ Astro 静态个人网站，双语（en / 繁中），部署在 GitHub Pages。
     │   └── zh-hk.ts         # 繁中界面文案
     ├── types/
     │   └── index.ts         # 所有数据文件的 TypeScript 类型
-    ├── components/          # Header / Footer + 六个 section 组件
+    ├── components/          # Header / Footer、六个 section、Home（首页组装）、
+    │                        # Post（文章排版）、LogoEasterEgg（Logo 五连击彩蛋）
     ├── layouts/
-    │   └── BaseLayout.astro # <head>、菲林边装饰、主题切换、回顶按钮
+    │   └── BaseLayout.astro # <head>、菲林边装饰、主题切换、回顶按钮、彩蛋挂载
     ├── pages/
-    │   ├── index.astro      # /        （英文）
-    │   └── zh-hk/index.astro# /zh-hk/  （繁中）
+    │   ├── index.astro      # /          （英文首页）
+    │   ├── writing/         # 文章页（英文，一篇一个 .astro）
+    │   ├── zh-hk/index.astro# /zh-hk/    （繁中首页）
+    │   └── zh-hk/writing/   # 文章页（繁中，与英文路径一一对应）
     ├── assets/photos/       # 照片源文件（original/ 内的原图不入库）
     └── styles/global.css    # 全局 token（深 / 浅双主题）、reset、公共样式
 ```
@@ -67,10 +70,20 @@ Astro 静态个人网站，双语（en / 繁中），部署在 GitHub Pages。
 `slot` 控制桌面端宽度档位：`ph-a` 窄 / `ph-b` 宽 / `ph-c`、`ph-d` 中。
 `title` / `location` / `year` 是给将来的独立摄影页预留的，现在不渲染。
 
-**加文章入口** → `src/data/writing.ts`
+**写文章 / 发新文章** → `src/pages/writing/` + `src/data/writing.ts`
 
-每条是一个 `{ time, title, excerpt }`，两语言各填一份；文章正式发布后补
-`href` 字段即可变成链接。
+发一篇新文章两步：
+
+1. 建两个页面：`src/pages/writing/<slug>.astro`（英文）和
+   `src/pages/zh-hk/writing/<slug>.astro`（繁中，路径一一对应）。外壳是
+   BaseLayout——传 `locale` 和 `path`（规范路径，决定 canonical / hreflang /
+   语言切换）以及 `title` / `description`；正文整体塞进 `Post` 组件
+   （props 就 `title`、`date` 两个）。排版由 Post.astro 统一：衬线正文、
+   引用橙色左边线、结尾句橙色、中文自动直立不斜体，文末返回链接指向
+   首页 #writing 锚点（自动带语言）。
+2. 登记：`src/data/writing.ts` 加一条 `{ time, title, excerpt, href }`，
+   两语言各填一份；`href` 填英文版规范路径（如 `'/writing/<slug>/'`），
+   两语言的首页行都会自动变成链接。没有 `href` 的条目保持不可点（草稿位）。
 
 **改导航** → `src/data/navigation.ts`
 
@@ -114,6 +127,14 @@ en.ts 是字典结构的源头，zh-hk.ts 必须逐字段对应（TypeScript 会
 **改域名 / GitHub / Logo / Email** → `src/config/site.ts`
 
 全站引用这一处，不用全局搜索。
+
+**彩蛋（Logo 五连击）** → `src/components/LogoEasterEgg.astro`
+
+连点左上角 Logo 5 次（间隔 ≤ 2 秒，超时重新计数）触发一条终端 toast：
+打字机逐字打出、约 4.5 秒后淡出，再次五连击可再次触发。文案、触发
+次数、间隔、停留时长都是文件顶部的常量，改一处即可。组件自成一体
+（Header 不知情，事件走 document 委托），无 localStorage；遵循
+`prefers-reduced-motion`（关动画时直接显示整句）。
 
 ## 命令
 
